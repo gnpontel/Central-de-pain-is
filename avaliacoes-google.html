@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bônus por Avaliações</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  :root{
+    --bg:#EEF0EA; --surface:#FFFFFF; --surface-2:#F5F6F1; --border:#D8DCD2;
+    --ink:#1B211D; --ink-muted:#5B655D; --ink-faint:#8B948C;
+    --accent:#1F6F54; --accent-ink:#FFFFFF; --accent-soft:#E1EFE7;
+    --gold:#B8791F;
+    --good:#2F8F5B; --good-bg:#E4F3EA;
+    --warn:#B24A29; --warn-bg:#FBEAE3;
+    --chip-bg:#E7E9E2;
+    --shadow: 0 1px 2px rgba(20,24,20,0.06), 0 8px 24px -12px rgba(20,24,20,0.18);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#141814; --surface:#1D2320; --surface-2:#212722; --border:#333B34;
+      --ink:#ECEFEA; --ink-muted:#A7B0AA; --ink-faint:#78827B;
+      --accent:#4FBE8F; --accent-ink:#0B1310; --accent-soft:#1B3229;
+      --gold:#E3A94A;
+      --good:#4FBE8F; --good-bg:#17352A;
+      --warn:#E8785A; --warn-bg:#3A2018;
+      --chip-bg:#262D27;
+      --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 12px 28px -14px rgba(0,0,0,0.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#141814; --surface:#1D2320; --surface-2:#212722; --border:#333B34;
+    --ink:#ECEFEA; --ink-muted:#A7B0AA; --ink-faint:#78827B;
+    --accent:#4FBE8F; --accent-ink:#0B1310; --accent-soft:#1B3229;
+    --gold:#E3A94A;
+    --good:#4FBE8F; --good-bg:#17352A;
+    --warn:#E8785A; --warn-bg:#3A2018;
+    --chip-bg:#262D27;
+    --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 12px 28px -14px rgba(0,0,0,0.6);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Source Sans 3", -apple-system, "Segoe UI", sans-serif;
+    padding-inline:20px; padding-block:28px 60px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px; margin:0 auto; display:flex; flex-direction:column; gap:22px;}
+
+  .eyebrow{
+    font:600 12px/1 "Source Sans 3", sans-serif; letter-spacing:.09em; text-transform:uppercase;
+    color:var(--accent);
+  }
+  h1{
+    font-family:"Big Shoulders Display", sans-serif; font-weight:700;
+    font-size:clamp(28px,4vw,40px); line-height:1.02; margin:2px 0 0; text-wrap:balance;
+    letter-spacing:.01em;
+  }
+  .sub{color:var(--ink-muted); font-size:15px; margin-top:6px; max-width:62ch;}
+
+  header.top{display:flex; flex-direction:column; gap:2px;}
+
+  .version-pill{
+    display:inline-flex; align-items:center; gap:6px; font-family:"IBM Plex Mono",monospace;
+    font-size:11.5px; font-weight:600; letter-spacing:.02em; color:var(--gold);
+    background:var(--chip-bg); border-radius:999px; padding:2px 10px; margin-right:8px;
+  }
+
+  .stat-row{display:grid; grid-template-columns:repeat(4,1fr); gap:14px;}
+  @media (max-width:900px){ .stat-row{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:480px){ .stat-row{grid-template-columns:1fr;} }
+  .tile{
+    background:var(--surface); border:1px solid var(--border); border-radius:14px;
+    padding:16px 18px; box-shadow:var(--shadow); display:flex; flex-direction:column; gap:6px;
+    min-width:0;
+  }
+  .tile .label{font-size:12.5px; color:var(--ink-muted); font-weight:600; letter-spacing:.02em;}
+  .tile .big{
+    font-family:"Big Shoulders Display", sans-serif; font-weight:800; font-size:38px; line-height:1;
+    font-variant-numeric:tabular-nums; letter-spacing:.01em;
+  }
+  .tile .foot{font-size:12.5px; color:var(--ink-faint); font-variant-numeric:tabular-nums;}
+  .tile.accent .big{color:var(--accent);}
+  .pill{
+    display:inline-flex; align-items:center; gap:6px; padding:3px 10px; border-radius:999px;
+    font-size:12.5px; font-weight:600; width:fit-content; font-variant-numeric:tabular-nums;
+  }
+  .pill.neutral{background:var(--chip-bg); color:var(--ink-muted);}
+  .pill.good{background:var(--good-bg); color:var(--good);}
+  .pill.warn{background:var(--warn-bg); color:var(--warn);}
+  .spark{margin-top:2px;}
+
+  .callout{
+    background:var(--surface-2); border:1px dashed var(--border); border-radius:12px;
+    padding:12px 16px; font-size:14px; color:var(--ink-muted); display:flex; flex-wrap:wrap;
+    align-items:center; gap:10px 16px; justify-content:space-between;
+  }
+  .callout strong{color:var(--ink); font-weight:600;}
+  .callout .maps-form{display:flex; gap:8px; flex-wrap:wrap; align-items:center;}
+
+  .grid{display:grid; grid-template-columns:1.35fr 1fr; gap:18px; align-items:start;}
+  @media (max-width:900px){ .grid{grid-template-columns:1fr;} }
+
+  .card{
+    background:var(--surface); border:1px solid var(--border); border-radius:16px;
+    padding:20px 22px; box-shadow:var(--shadow); display:flex; flex-direction:column; gap:14px;
+  }
+  .card h2{
+    font-family:"Big Shoulders Display", sans-serif; font-size:19px; font-weight:700;
+    margin:0; letter-spacing:.01em; text-transform:uppercase; color:var(--ink);
+  }
+  .card .hint{font-size:13px; color:var(--ink-muted); margin-top:-8px;}
+
+  form.log{display:flex; flex-wrap:wrap; gap:12px; align-items:flex-end;}
+  .field{display:flex; flex-direction:column; gap:5px;}
+  .field label{font-size:12.5px; font-weight:600; color:var(--ink-muted);}
+  .field input{
+    background:var(--surface-2); border:1px solid var(--border); border-radius:9px;
+    padding:9px 11px; font-size:14.5px; color:var(--ink); font-family:inherit;
+    font-variant-numeric:tabular-nums;
+  }
+  .field input:focus{outline:2px solid var(--accent); outline-offset:1px;}
+  .field.grow{flex:1; min-width:160px;}
+  .field.small input{width:130px;}
+
+  button{
+    font-family:inherit; font-weight:600; font-size:14px; border-radius:9px; border:1px solid transparent;
+    padding:10px 16px; cursor:pointer; transition:filter .12s ease;
+  }
+  button:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  button.primary{background:var(--accent); color:var(--accent-ink);}
+  button.primary:hover{filter:brightness(1.06);}
+  button.ghost{background:transparent; border-color:var(--border); color:var(--ink);}
+  button.ghost:hover{background:var(--surface-2);}
+  button.danger-ghost{background:transparent; border:1px solid var(--border); color:var(--warn); padding:6px 10px; font-size:12.5px;}
+  button.danger-ghost:hover{background:var(--warn-bg);}
+  button.link{background:none; border:none; color:var(--accent); padding:0; font-weight:600; text-decoration:underline; cursor:pointer; font-size:13px;}
+
+  .chart-wrap{overflow-x:auto;}
+  .chart-wrap svg{display:block;}
+
+  table{width:100%; border-collapse:collapse; font-size:13.5px;}
+  .table-wrap{overflow-x:auto;}
+  th{
+    text-align:left; font-size:11.5px; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--ink-faint); font-weight:600; padding:0 10px 8px; border-bottom:1px solid var(--border);
+    white-space:nowrap;
+  }
+  td{padding:9px 10px; border-bottom:1px solid var(--border); white-space:nowrap; font-variant-numeric:tabular-nums;}
+  tr:last-child td{border-bottom:none;}
+  .empty-row td{color:var(--ink-faint); font-style:normal; white-space:normal;}
+
+  .collab-row{
+    display:flex; gap:8px; align-items:center; background:var(--surface-2);
+    border:1px solid var(--border); border-radius:10px; padding:8px 10px;
+  }
+  .collab-row input{
+    background:var(--surface); border:1px solid var(--border); border-radius:7px;
+    padding:6px 8px; font-size:13.5px; color:var(--ink); font-family:inherit; font-variant-numeric:tabular-nums;
+    flex:1;
+  }
+  .collab-list{display:flex; flex-direction:column; gap:8px;}
+  .row-x{background:none; border:none; color:var(--ink-faint); cursor:pointer; font-size:16px; line-height:1; padding:4px;}
+  .row-x:hover{color:var(--warn);}
+
+  .banner{
+    background:var(--accent-soft); border:1px solid var(--accent); border-radius:10px;
+    padding:10px 14px; font-size:13.5px; color:var(--ink); display:flex; gap:10px; align-items:flex-start;
+  }
+  .banner b{color:var(--accent);}
+
+  .save-row{display:flex; justify-content:flex-end; gap:8px;}
+  .muted-small{font-size:12px; color:var(--ink-faint);}
+  .divider{border:none; border-top:1px solid var(--border); margin:2px 0;}
+
+  .tabbar{display:flex; gap:18px; border-bottom:1px solid var(--border);}
+  .tabbtn{
+    background:none; border:none; padding:8px 2px 10px; cursor:pointer;
+    font-family:"Big Shoulders Display", sans-serif; font-weight:700; font-size:15px;
+    letter-spacing:.03em; text-transform:uppercase; color:var(--ink-faint);
+    border-bottom:2px solid transparent; margin-bottom:-1px;
+  }
+  .tabbtn:hover{color:var(--ink);}
+  .tabbtn.active{color:var(--ink); border-bottom-color:var(--accent);}
+
+  .stars{color:var(--gold); font-size:13px; letter-spacing:1px; white-space:nowrap; font-variant-numeric:tabular-nums;}
+  .stars .empty{color:var(--border);}
+
+  .comments-note{font-size:13px; color:var(--ink-muted);}
+  .comments-list{display:flex; flex-direction:column; gap:12px;}
+  .comment-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:14px;
+    padding:16px 18px; box-shadow:var(--shadow); display:flex; flex-direction:column; gap:8px;
+  }
+  .comment-card .chead{display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;}
+  .comment-card .cname{font-weight:700; font-size:14.5px;}
+  .comment-card .cwhen{font-size:12px; color:var(--ink-faint);}
+  .comment-card .ctext{font-size:14px; line-height:1.55; color:var(--ink);}
+  .comment-card .creply{
+    margin-top:2px; padding:10px 12px; background:var(--surface-2);
+    border-left:3px solid var(--accent); border-radius:0 8px 8px 0; font-size:13px; color:var(--ink-muted);
+  }
+  .comment-card .creply b{color:var(--ink);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <span class="eyebrow" id="restName">Rango do Chef</span>
+    <h1>Bônus por avaliações no Google</h1>
+    <p class="sub">Contagem semanal de avaliações do Perfil da Empresa no Google, usada para calcular a bonificação do time de caixa.</p>
+    <p class="muted-small" style="margin:8px 0 0; padding:8px 12px; background:var(--surface-2); border-radius:8px; display:inline-block;">📄 Versão pública deste painel — os números vêm de um arquivo de dados dentro deste mesmo site (não é uma conexão ao vivo). Alterações feitas nos formulários abaixo não são salvas permanentemente aqui.</p>
+    <p class="muted-small" style="margin:6px 0 0;"><span class="version-pill">v1.0</span><span id="lastUpdated">—</span></p>
+  </header>
+
+  <div class="tabbar">
+    <button class="tabbtn active" id="tabBtnPainel" type="button">Painel</button>
+    <button class="tabbtn" id="tabBtnComentarios" type="button">Comentários</button>
+  </div>
+
+  <div id="viewPainel">
+  <div class="stat-row">
+    <div class="tile">
+      <span class="label">Total de avaliações (Google)</span>
+      <span class="big tabular" id="statTotal">—</span>
+      <span class="foot" id="statTotalFoot">nenhuma contagem registrada ainda</span>
+    </div>
+    <div class="tile accent">
+      <span class="label">Avaliações nesta semana</span>
+      <span class="big" id="statDelta">—</span>
+      <div class="spark" id="sparkHost"></div>
+    </div>
+    <div class="tile">
+      <span class="label">Nota no Google</span>
+      <span style="display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;">
+        <span class="big" id="statRating">—</span>
+        <span class="pill neutral" id="ratingGoalPill" style="color:var(--gold);">meta —</span>
+      </span>
+      <span class="foot" id="statRatingFoot">—</span>
+    </div>
+    <div class="tile accent">
+      <span class="label">Faltam para a meta</span>
+      <span class="big" id="statRemaining">—</span>
+      <span class="foot" id="statRemainingFoot">—</span>
+    </div>
+  </div>
+
+  <div class="callout" id="goalCallout" style="flex-direction:column; align-items:stretch;">
+    <div style="display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px;">
+      <span><strong>Meta do mês:</strong> <span id="goalProgressText">—</span></span>
+    </div>
+    <div style="background:var(--chip-bg); border-radius:999px; height:9px; overflow:hidden; margin-top:2px;">
+      <div id="goalBar" style="height:100%; background:var(--accent); width:0%; border-radius:999px; transition:width .3s ease;"></div>
+    </div>
+    <div style="display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px; margin-top:2px;">
+      <span class="pill neutral" id="bonusStatusPill">—</span>
+      <span id="goalEditHost"></span>
+    </div>
+    <div class="chart-wrap" id="goalChartHost" style="margin-top:2px;"></div>
+  </div>
+
+  <div class="callout" id="mapsCallout">
+    <span><strong>Como contar:</strong> abra a ficha do restaurante no Google Maps e veja o número ao lado das estrelas — é o total acumulado de avaliações. Registre esse número toda semana, sempre no mesmo dia.</span>
+    <span class="maps-form" id="mapsFormHost"></span>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Registrar contagem da semana</h2>
+      <p class="hint">Escolha a segunda-feira da semana e o total acumulado de avaliações no Google naquele dia.</p>
+      <form class="log" id="logForm">
+        <div class="field">
+          <label for="weekStart">Semana (segunda-feira)</label>
+          <input type="date" id="weekStart" required>
+        </div>
+        <div class="field small">
+          <label for="totalInput">Total acumulado</label>
+          <input type="number" id="totalInput" min="0" step="1" placeholder="ex: 214" required>
+        </div>
+        <div class="field grow">
+          <label for="loggedBy">Registrado por (opcional)</label>
+          <input type="text" id="loggedBy" placeholder="seu nome">
+        </div>
+        <button class="primary" type="submit">Registrar</button>
+      </form>
+
+      <hr class="divider">
+
+      <h2 style="margin-top:2px;">Histórico semanal</h2>
+      <div class="chart-wrap" id="chartHost"></div>
+      <div class="table-wrap">
+        <table id="historyTable">
+          <thead>
+            <tr><th>Semana</th><th>Total</th><th>Novas</th><th>Nota média</th><th>Por</th></tr>
+          </thead>
+          <tbody id="historyBody">
+            <tr class="empty-row"><td colspan="5">Nenhuma semana registrada ainda. Use o formulário acima para registrar a contagem atual e começar o histórico.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:18px;">
+      <div class="card">
+        <h2>Colaboradores do caixa</h2>
+        <p class="hint">Time elegível ao bônus compartilhado — um valor único para o grupo, não dividido por pessoa.</p>
+        <div class="collab-list" id="collabList"></div>
+        <button class="link" id="addCollabBtn" type="button">+ adicionar colaborador</button>
+        <div class="save-row">
+          <span class="muted-small" id="saveStatus"></span>
+          <button class="primary" id="saveConfigBtn" type="button">Salvar configurações</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div id="viewComments" hidden>
+    <div class="card">
+      <h2>Comentários do último mês</h2>
+      <p class="hint">Texto das avaliações escritas nas últimas 4 semanas, extraído do Perfil da Empresa no Google.</p>
+      <div class="comments-list" id="commentsListHost"></div>
+      <p class="comments-note" id="commentsFootnote"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  function esc(s){
+    return String(s ?? "").replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+    });
+  }
+  function fmtDate(d){
+    var dt = (d instanceof Date) ? d : new Date(d + "T00:00:00");
+    return dt.toLocaleDateString("pt-BR", {day:"2-digit", month:"2-digit"});
+  }
+  function fmtDateTime(iso){
+    if (!iso) return null;
+    var dt = new Date(iso);
+    if (isNaN(dt.getTime())) return null;
+    return dt.toLocaleDateString("pt-BR", {day:"2-digit", month:"2-digit", year:"numeric"}) +
+      " às " + dt.toLocaleTimeString("pt-BR", {hour:"2-digit", minute:"2-digit"});
+  }
+  function fmtMoney(v){
+    return "R$ " + Number(v||0).toLocaleString("pt-BR", {minimumFractionDigits:2, maximumFractionDigits:2});
+  }
+  function mostRecentMonday(){
+    var d = new Date();
+    var day = d.getDay(); // 0 sun .. 6 sat
+    var diff = (day === 0) ? 6 : day - 1;
+    d.setDate(d.getDate() - diff);
+    d.setHours(0,0,0,0);
+    return d;
+  }
+  function toISODate(d){
+    var y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,"0"), day=String(d.getDate()).padStart(2,"0");
+    return y+"-"+m+"-"+day;
+  }
+  function addDays(iso, n){
+    var d = new Date(iso + "T00:00:00");
+    d.setDate(d.getDate()+n);
+    return d;
+  }
+  function uid(){
+    return (crypto.randomUUID ? crypto.randomUUID() : "id-"+Math.random().toString(36).slice(2));
+  }
+  function starsHtml(rating){
+    var r = Math.round(Number(rating||0));
+    var out = "";
+    for (var i=1;i<=5;i++){ out += (i<=r) ? "★" : '<span class="empty">★</span>'; }
+    return out;
+  }
+  function weeksAgoLabel(n){
+    if (n === 0) return "esta semana";
+    if (n === 1) return "há 1 semana";
+    return "há " + n + " semanas";
+  }
+
+  var DEFAULT_COLLABS = [];
+
+  var state = {
+    collaborators: DEFAULT_COLLABS.slice(),
+    mapsUrl: "",
+    monthlyGoal: 20,
+    monthlyBonusValue: 0,
+    ratingGoal: 4.7,
+    weeks: [],       // {id, weekStart, weekEnd, totalReviews, avgRating, loggedBy}
+    googleStats: null, // {rating, totalReviews, dist, updatedAt}
+    comments: [],    // {id, name, rating, weeksAgo, text, ownerReply}
+    extraRatedNoText: "",
+    weeksUpdatedAt: null,
+    statsUpdatedAt: null,
+    goalUpdatedAt: null
+  };
+
+  var db = null;
+  var configRef = null, weeksCol = null, statsRef = null, commentsCol = null, goalRef = null;
+
+  // ============================================================
+  // DADOS ESTÁTICOS DESTE SITE — edite os números abaixo para atualizar
+  // o painel (essa versão fora do Claude não tem banco de dados ao vivo,
+  // então os dados vêm deste bloco em vez de se atualizarem sozinhos).
+  // ============================================================
+  var STATIC_DATA = {
+  "weeks": [
+    {
+      "id": "2026-06-08",
+      "weekStart": "2026-06-08",
+      "weekEnd": "2026-06-14",
+      "totalReviews": 317,
+      "avgRating": 5,
+      "loggedBy": "automação (Google Maps)",
+      "loggedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "2026-06-15",
+      "weekStart": "2026-06-15",
+      "weekEnd": "2026-06-21",
+      "totalReviews": 319,
+      "avgRating": 4,
+      "loggedBy": "automação (Google Maps)",
+      "loggedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "2026-06-22",
+      "weekStart": "2026-06-22",
+      "weekEnd": "2026-06-28",
+      "totalReviews": 320,
+      "avgRating": 5,
+      "loggedBy": "automação (Google Maps)",
+      "loggedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "2026-06-29",
+      "weekStart": "2026-06-29",
+      "weekEnd": "2026-07-05",
+      "totalReviews": 320,
+      "avgRating": null,
+      "loggedBy": "automação (Google Maps)",
+      "loggedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "2026-07-06",
+      "weekStart": "2026-07-06",
+      "weekEnd": "2026-07-12",
+      "totalReviews": 321,
+      "avgRating": 1,
+      "loggedBy": "automação (Google Maps)",
+      "loggedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "2026-07-13",
+      "weekStart": "2026-07-13",
+      "weekEnd": "2026-07-19",
+      "totalReviews": 321,
+      "avgRating": null,
+      "loggedBy": "automação (Google Maps)",
+      "loggedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "2026-07-20",
+      "weekStart": "2026-07-20",
+      "weekEnd": "2026-07-26",
+      "totalReviews": 321,
+      "avgRating": null,
+      "loggedBy": "automação (Google Maps)",
+      "loggedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "2026-07-27",
+      "weekStart": "2026-07-27",
+      "weekEnd": "2026-08-02",
+      "totalReviews": 324,
+      "avgRating": 5,
+      "loggedBy": "automação (Google Maps)",
+      "loggedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "2026-08-03",
+      "weekStart": "2026-08-03",
+      "weekEnd": "2026-08-09",
+      "totalReviews": 326,
+      "avgRating": 5,
+      "loggedBy": "automação (Google Maps)",
+      "loggedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "2026-08-10",
+      "weekStart": "2026-08-10",
+      "weekEnd": "2026-08-16",
+      "totalReviews": 328,
+      "avgRating": 5,
+      "loggedBy": "automação (Google Maps)",
+      "loggedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "2026-08-17",
+      "weekStart": "2026-08-17",
+      "weekEnd": "2026-08-23",
+      "totalReviews": 331,
+      "avgRating": 3.67,
+      "loggedBy": "automação (Google Maps)",
+      "loggedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "2026-08-24",
+      "weekStart": "2026-08-24",
+      "weekEnd": "2026-08-30",
+      "totalReviews": 332,
+      "avgRating": 5,
+      "loggedBy": "automação (Google Maps)",
+      "loggedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "2026-08-31",
+      "weekStart": "2026-08-31",
+      "weekEnd": "2026-09-06",
+      "totalReviews": 332,
+      "avgRating": null,
+      "loggedBy": "automação (Google Maps)",
+      "loggedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "2026-09-07",
+      "weekStart": "2026-09-07",
+      "weekEnd": "2026-09-13",
+      "totalReviews": 332,
+      "avgRating": null,
+      "loggedBy": "automação (Google Maps)",
+      "loggedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "2026-09-14",
+      "weekStart": "2026-09-14",
+      "weekEnd": "2026-09-20",
+      "totalReviews": 332,
+      "avgRating": 4.5,
+      "loggedBy": "automação (Google Maps)",
+      "loggedAt": "2026-09-20T00:00:00.000Z"
+    },
+    {
+      "id": "2026-09-21",
+      "weekStart": "2026-09-21",
+      "weekEnd": "2026-09-27",
+      "totalReviews": 332,
+      "avgRating": 4.5,
+      "loggedBy": "Claude (verificação manual)",
+      "loggedAt": "2026-09-22T00:00:00.000Z"
+    }
+  ],
+  "stats": {
+    "dist": {
+      "1": 31,
+      "2": 4,
+      "3": 11,
+      "4": 8,
+      "5": 278
+    },
+    "rating": 4.5,
+    "totalReviews": 332,
+    "updatedAt": "2026-09-22T00:00:00.000Z"
+  },
+  "goal": {
+    "monthlyGoal": 20,
+    "monthlyBonusValue": 0,
+    "ratingGoal": 4.7,
+    "updatedAt": "2026-09-11T00:00:00.000Z"
+  },
+  "settings": {
+    "collaborators": [],
+    "mapsUrl": ""
+  },
+  "comments": [
+    {
+      "id": "c1",
+      "name": "Dinda YouTube",
+      "rating": 5,
+      "weeksAgo": 2,
+      "text": "Comida sempre muito saborosa, chega quentinha o atendimento no 10000..!! Obrigada 🙏 vocês são de mais",
+      "ownerReply": "Obrigado Dinda!! Até a próxima!"
+    },
+    {
+      "id": "c2",
+      "name": "Gabriela Yonamine",
+      "rating": 1,
+      "weeksAgo": 3,
+      "text": "Infelizmente, tive uma experiência muito ruim. Fiz um pedido de laminuta com bife de alcatra e paguei um valor mais alto justamente esperando receber uma carne de boa qualidade. Porém, quando fui comer, a carne estava com um gosto extremamente ruim e estranho.",
+      "ownerReply": "Olá Gabriela, pedimos muitas desculpas pelo ocorrido — já acionamos nosso fornecedor sobre isso."
+    },
+    {
+      "id": "c3",
+      "name": "Daniel Farias Jandrey",
+      "rating": 5,
+      "weeksAgo": 4,
+      "text": "Tive uma experiência onde a loja enviou um item errado. Prontamente fui atendido e me deram tanto opção de enviarem o produto correto ou reembolso integral do valor do pedido.",
+      "ownerReply": "Obrigado Daniel. Ficamos muito agradecidos pelo seu feedback."
+    }
+  ]
+};
+
+  // ---------------- rendering ----------------
+
+  function computeSeries(){
+    var weeks = state.weeks.slice().sort(function(a,b){ return a.weekStart < b.weekStart ? -1 : 1; });
+    var out = [];
+    for (var i=0;i<weeks.length;i++){
+      var w = weeks[i];
+      var delta = (i===0) ? null : (w.totalReviews - weeks[i-1].totalReviews);
+      out.push(Object.assign({}, w, {delta: delta, avgRating: (w.avgRating===undefined?null:w.avgRating)}));
+    }
+    return out;
+  }
+
+  function monthKey(iso){ return String(iso||"").slice(0,7); }
+
+  function computeMonthWeeks(){
+    var series = computeSeries();
+    var mk = monthKey(toISODate(new Date()));
+    var weeksInMonth = series.filter(function(s){ return monthKey(s.weekStart) === mk; });
+    var running = 0;
+    return weeksInMonth.map(function(s){
+      running += (s.delta !== null ? s.delta : 0);
+      return {weekStart: s.weekStart, weekEnd: s.weekEnd, gain: (s.delta!==null?s.delta:0), cumulative: running};
+    });
+  }
+
+  function computeMonthProgress(){
+    var weeksInMonth = computeMonthWeeks();
+    return weeksInMonth.length ? weeksInMonth[weeksInMonth.length-1].cumulative : 0;
+  }
+
+  function persistGoal(){
+    if (!goalRef) return;
+    goalRef.set({
+      monthlyGoal: state.monthlyGoal,
+      monthlyBonusValue: state.monthlyBonusValue,
+      ratingGoal: state.ratingGoal,
+      updatedAt: new Date().toISOString()
+    }).catch(function(){});
+  }
+
+  function renderGoalChart(){
+    var host = document.getElementById("goalChartHost");
+    var weeksInMonth = computeMonthWeeks();
+    var goal = Number(state.monthlyGoal || 0);
+    if (!weeksInMonth.length){
+      host.innerHTML = '<p class="muted-small" style="margin:2px 0 0;">O gráfico aparece assim que houver contagens registradas neste mês.</p>';
+      return;
+    }
+    var barW = 34, gap = 14, padL = 34, padR = 10, padT = 12, padB = 22;
+    var chartH = 110;
+    var w = padL + padR + weeksInMonth.length * (barW + gap) - gap;
+    var maxVal = Math.max(goal, Math.max.apply(null, weeksInMonth.map(function(s){ return s.cumulative; })), 1);
+    var niceMax = Math.ceil(maxVal / 5) * 5 || 5;
+    var scaleH = chartH - padT - padB;
+    function y(v){ return padT + scaleH - (v/niceMax)*scaleH; }
+
+    var goalY = y(Math.min(goal, niceMax));
+    var goalLine = goal > 0 ? (
+      '<line x1="'+padL+'" x2="'+(w-padR)+'" y1="'+goalY+'" y2="'+goalY+'" stroke="var(--gold)" stroke-width="1.5" stroke-dasharray="4,3"/>'+
+      '<text x="'+(w-padR)+'" y="'+(goalY-4)+'" text-anchor="end" font-size="10" fill="var(--gold)" font-family="IBM Plex Mono, monospace">meta '+goal+'</text>'
+    ) : "";
+
+    var bars = "";
+    weeksInMonth.forEach(function(s, i){
+      var x = padL + i*(barW+gap);
+      var hit = goal > 0 && s.cumulative >= goal;
+      var color = hit ? "var(--good)" : "var(--accent)";
+      var barY = y(Math.max(0,s.cumulative));
+      var barH = Math.max(2, scaleH + padT - barY);
+      bars += '<rect x="'+x+'" y="'+barY+'" width="'+barW+'" height="'+barH+'" rx="4" fill="'+color+'"/>';
+      bars += '<text x="'+(x+barW/2)+'" y="'+(barY-6)+'" text-anchor="middle" font-size="11" font-weight="600" fill="var(--ink)" font-family="IBM Plex Mono, monospace">'+s.cumulative+'</text>';
+      bars += '<text x="'+(x+barW/2)+'" y="'+(chartH-6)+'" text-anchor="middle" font-size="10" fill="var(--ink-faint)">'+fmtDate(s.weekStart)+'</text>';
+    });
+
+    host.innerHTML = '<svg width="'+w+'" height="'+chartH+'" viewBox="0 0 '+w+' '+chartH+'" role="img" aria-label="progresso acumulado de avaliações no mês em relação à meta">'+
+      goalLine + bars +
+      '</svg>';
+  }
+
+  function renderGoal(){
+    var textEl = document.getElementById("goalProgressText");
+    var barEl = document.getElementById("goalBar");
+    var pillEl = document.getElementById("bonusStatusPill");
+    var editHost = document.getElementById("goalEditHost");
+    var goal = Number(state.monthlyGoal || 0);
+    var bonusVal = Number(state.monthlyBonusValue || 0);
+    var sum = computeMonthProgress();
+    var hit = goal > 0 && sum >= goal;
+    var pct = goal > 0 ? Math.min(100, (sum/goal)*100) : 0;
+    var monthName = new Date().toLocaleDateString("pt-BR", {month:"long"});
+    textEl.textContent = sum + " de " + goal + " avaliações novas em " + monthName + (hit ? " · meta batida ✓" : "");
+    barEl.style.width = pct + "%";
+    barEl.style.background = hit ? "var(--good)" : "var(--accent)";
+
+    var remainingEl = document.getElementById("statRemaining");
+    var remainingFoot = document.getElementById("statRemainingFoot");
+    var remaining = Math.max(0, goal - sum);
+    if (hit){
+      remainingEl.textContent = "0";
+      remainingFoot.textContent = "meta batida este mês ✓";
+    } else {
+      remainingEl.textContent = remaining;
+      remainingFoot.textContent = "para fechar " + monthName + " com " + goal;
+    }
+
+    if (bonusVal > 0){
+      pillEl.className = "pill " + (hit ? "good" : "neutral");
+      pillEl.textContent = hit
+        ? ("Bônus de " + fmtMoney(bonusVal) + " liberado — equipe bateu a meta!")
+        : (fmtMoney(bonusVal) + " de bônus só é liberado se a equipe fechar o mês com " + goal + " avaliações (faltam " + Math.max(0, goal-sum) + ")");
+    } else {
+      pillEl.className = "pill neutral";
+      pillEl.textContent = "valor do bônus ainda não definido";
+    }
+
+    if (!editHost.dataset.editing){
+      editHost.innerHTML = '<button class="link" id="editGoalBtn" type="button">editar meta / bônus</button>';
+      document.getElementById("editGoalBtn").onclick = function(){
+        editHost.dataset.editing = "1";
+        editHost.innerHTML =
+          '<span class="muted-small">meta</span> '+
+          '<input id="goalInput" type="number" min="0" step="1" value="'+esc(goal)+'" style="width:56px; background:var(--surface); border:1px solid var(--border); border-radius:7px; padding:5px 7px; font-size:13px; color:var(--ink); font-family:inherit; font-variant-numeric:tabular-nums;"> '+
+          '<span class="muted-small">bônus R$</span> '+
+          '<input id="bonusValInput" type="number" min="0" step="1" value="'+esc(bonusVal)+'" style="width:72px; background:var(--surface); border:1px solid var(--border); border-radius:7px; padding:5px 7px; font-size:13px; color:var(--ink); font-family:inherit; font-variant-numeric:tabular-nums;"> '+
+          '<span class="muted-small">nota meta</span> '+
+          '<input id="ratingGoalInput" type="number" min="0" max="5" step="0.1" value="'+esc(Number(state.ratingGoal||0))+'" style="width:56px; background:var(--surface); border:1px solid var(--border); border-radius:7px; padding:5px 7px; font-size:13px; color:var(--ink); font-family:inherit; font-variant-numeric:tabular-nums;"> '+
+          '<button class="link" id="saveGoalBtn" type="button">salvar</button>';
+        document.getElementById("saveGoalBtn").onclick = function(){
+          var v = Number(document.getElementById("goalInput").value);
+          var bv = Number(document.getElementById("bonusValInput").value);
+          var rv = Number(document.getElementById("ratingGoalInput").value);
+          state.monthlyGoal = isNaN(v) ? 0 : v;
+          state.monthlyBonusValue = isNaN(bv) ? 0 : bv;
+          state.ratingGoal = isNaN(rv) ? 0 : rv;
+          delete editHost.dataset.editing;
+          persistGoal();
+          renderGoal();
+          renderGoalChart();
+          renderStats();
+        };
+      };
+    }
+  }
+
+  function renderMapsForm(){
+    var host = document.getElementById("mapsFormHost");
+    if (state.mapsUrl){
+      host.innerHTML = '<a class="ghost" style="text-decoration:none; display:inline-flex; padding:8px 14px; border:1px solid var(--border); border-radius:9px; color:var(--ink); font-size:13.5px; font-weight:600;" href="'+esc(state.mapsUrl)+'" target="_blank" rel="noopener">Abrir Google Maps ↗</a> <button class="link" id="editMapsUrl" type="button" style="margin-left:8px;">editar link</button>';
+      document.getElementById("editMapsUrl").onclick = function(){ state.mapsUrl = ""; renderMapsForm(); };
+    } else {
+      host.innerHTML = '<input id="mapsUrlInput" type="url" placeholder="cole o link do Google Maps do restaurante" style="min-width:220px; background:var(--surface); border:1px solid var(--border); border-radius:9px; padding:8px 10px; font-size:13.5px; color:var(--ink); font-family:inherit;"> <button class="ghost" id="saveMapsUrl" type="button">salvar link</button>';
+      document.getElementById("saveMapsUrl").onclick = function(){
+        var v = document.getElementById("mapsUrlInput").value.trim();
+        if (!v) return;
+        state.mapsUrl = v;
+        renderMapsForm();
+        persistConfig({silent:true});
+      };
+    }
+  }
+
+  function renderStats(){
+    var series = computeSeries();
+    var latest = series.length ? series[series.length-1] : null;
+
+    var totalEl = document.getElementById("statTotal");
+    var totalFoot = document.getElementById("statTotalFoot");
+    if (latest){
+      totalEl.textContent = latest.totalReviews;
+      totalFoot.textContent = "em " + fmtDate(latest.weekStart);
+    } else {
+      totalEl.textContent = "—";
+      totalFoot.textContent = "nenhuma contagem registrada ainda";
+    }
+
+    var deltaEl = document.getElementById("statDelta");
+    if (latest && latest.delta !== null){
+      deltaEl.textContent = (latest.delta >= 0 ? "+" : "") + latest.delta;
+    } else {
+      deltaEl.textContent = "—";
+    }
+
+    var ratingEl = document.getElementById("statRating");
+    var ratingFoot = document.getElementById("statRatingFoot");
+    var ratingGoalPill = document.getElementById("ratingGoalPill");
+    if (state.googleStats && state.googleStats.rating){
+      ratingEl.textContent = Number(state.googleStats.rating).toLocaleString("pt-BR", {minimumFractionDigits:1, maximumFractionDigits:1});
+      ratingFoot.textContent = (state.googleStats.totalReviews||latest && latest.totalReviews||"—") + " avaliações no Google";
+    } else {
+      ratingEl.textContent = "—";
+      ratingFoot.textContent = "—";
+    }
+    var rGoal = Number(state.ratingGoal || 0);
+    if (rGoal > 0){
+      ratingGoalPill.textContent = "meta " + rGoal.toLocaleString("pt-BR", {minimumFractionDigits:1, maximumFractionDigits:1});
+      var rCurrent = state.googleStats && state.googleStats.rating ? Number(state.googleStats.rating) : null;
+      ratingGoalPill.style.color = (rCurrent !== null && rCurrent >= rGoal) ? "var(--good)" : "var(--gold)";
+    } else {
+      ratingGoalPill.textContent = "sem meta definida";
+      ratingGoalPill.style.color = "var(--ink-faint)";
+    }
+
+    renderSpark(series);
+  }
+
+  function renderSpark(series){
+    var host = document.getElementById("sparkHost");
+    var pts = series.slice(-8).map(function(s){ return s.delta; }).filter(function(v){ return v !== null; });
+    if (pts.length < 2){ host.innerHTML = ""; return; }
+    var w = 140, h = 30, pad = 3;
+    var max = Math.max.apply(null, pts.concat([0]));
+    var min = Math.min.apply(null, pts.concat([0]));
+    var range = (max - min) || 1;
+    var stepX = (w - pad*2) / (pts.length - 1);
+    var coords = pts.map(function(v,i){
+      var x = pad + i*stepX;
+      var y = h - pad - ((v - min) / range) * (h - pad*2);
+      return x.toFixed(1) + "," + y.toFixed(1);
+    });
+    var lastX = pad + (pts.length-1)*stepX, lastY = h - pad - ((pts[pts.length-1]-min)/range)*(h-pad*2);
+    host.innerHTML = '<svg width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'" role="img" aria-label="tendência de avaliações novas por semana">'+
+      '<polyline points="'+coords.join(" ")+'" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>'+
+      '<circle cx="'+lastX.toFixed(1)+'" cy="'+lastY.toFixed(1)+'" r="2.6" fill="var(--accent)"/>'+
+      '</svg>';
+  }
+
+  function renderChart(){
+    var host = document.getElementById("chartHost");
+    var series = computeSeries().slice(-13);
+    var withDelta = series.filter(function(s){ return s.delta !== null; });
+    if (!withDelta.length){
+      host.innerHTML = '<p class="muted-small" style="margin:4px 0 0;">O gráfico aparece a partir da 2ª semana registrada.</p>';
+      return;
+    }
+    var barW = 34, gap = 14, padL = 34, padR = 10, padT = 24, padB = 22;
+    var chartH = 124;
+    var w = padL + padR + withDelta.length * (barW + gap) - gap;
+    var maxVal = Math.max.apply(null, withDelta.map(function(s){ return s.delta; }).concat([1]));
+    var niceMax = Math.ceil(maxVal / 5) * 5 || 5;
+    var scaleH = chartH - padT - padB;
+
+    function y(v){ return padT + scaleH - (v/niceMax)*scaleH; }
+
+    var gridLines = "";
+    var ticks = 4;
+    for (var g=0; g<=ticks; g++){
+      var val = Math.round(niceMax * g / ticks);
+      var yy = y(val);
+      gridLines += '<line x1="'+padL+'" x2="'+(w-padR)+'" y1="'+yy+'" y2="'+yy+'" stroke="var(--border)" stroke-width="1"/>';
+      gridLines += '<text x="'+(padL-8)+'" y="'+(yy+3)+'" text-anchor="end" font-size="10" fill="var(--ink-faint)" font-family="IBM Plex Mono, monospace">'+val+'</text>';
+    }
+
+    var bars = "";
+    withDelta.forEach(function(s, i){
+      var x = padL + i*(barW+gap);
+      var color = "var(--accent)";
+      var barY = y(Math.max(0,s.delta));
+      var barH = Math.max(2, scaleH + padT - barY);
+      bars += '<rect x="'+x+'" y="'+barY+'" width="'+barW+'" height="'+barH+'" rx="4" fill="'+color+'"/>';
+      bars += '<text x="'+(x+barW/2)+'" y="'+(y(Math.max(0,s.delta))-6)+'" text-anchor="middle" font-size="11" font-weight="600" fill="var(--ink)" font-family="IBM Plex Mono, monospace">'+s.delta+'</text>';
+      if (s.avgRating){
+        bars += '<text x="'+(x+barW/2)+'" y="12" text-anchor="middle" font-size="10" fill="var(--gold)" font-family="IBM Plex Mono, monospace">★'+Number(s.avgRating).toLocaleString("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1})+'</text>';
+      }
+      bars += '<text x="'+(x+barW/2)+'" y="'+(chartH-6)+'" text-anchor="middle" font-size="10" fill="var(--ink-faint)">'+fmtDate(s.weekStart)+'</text>';
+    });
+
+    host.innerHTML = '<svg width="'+w+'" height="'+chartH+'" viewBox="0 0 '+w+' '+chartH+'" role="img" aria-label="avaliações novas por semana">'+
+      gridLines + bars +
+      '</svg>';
+  }
+
+  function renderHistory(){
+    var series = computeSeries().slice().reverse();
+    var body = document.getElementById("historyBody");
+    if (!series.length){
+      body.innerHTML = '<tr class="empty-row"><td colspan="5">Nenhuma semana registrada ainda. Use o formulário acima para registrar a contagem atual e começar o histórico.</td></tr>';
+      return;
+    }
+    body.innerHTML = series.map(function(s){
+      return '<tr>'+
+        '<td>'+fmtDate(s.weekStart)+' – '+fmtDate(s.weekEnd)+'</td>'+
+        '<td>'+s.totalReviews+'</td>'+
+        '<td>'+(s.delta===null? "—" : (s.delta>=0?"+":"")+s.delta)+'</td>'+
+        '<td>'+(s.avgRating? Number(s.avgRating).toLocaleString("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1}) : "—")+'</td>'+
+        '<td>'+esc(s.loggedBy||"—")+'</td>'+
+        '</tr>';
+    }).join("");
+  }
+
+  function renderCollabs(){
+    var host = document.getElementById("collabList");
+    if (!state.collaborators.length){
+      host.innerHTML = '<p class="muted-small" style="margin:0;">Nenhum colaborador adicionado — o bônus não será dividido até adicionar pelo menos um.</p>';
+      return;
+    }
+    host.innerHTML = state.collaborators.map(function(c, i){
+      return '<div class="collab-row" data-i="'+i+'">'+
+        '<input type="text" value="'+esc(c.name)+'" placeholder="nome do colaborador" data-field="name">'+
+        '<button class="row-x" type="button" title="remover" data-remove="'+i+'">×</button>'+
+        '</div>';
+    }).join("");
+    Array.prototype.forEach.call(host.querySelectorAll("input"), function(inp){
+      inp.addEventListener("input", function(){
+        var row = inp.closest(".collab-row");
+        var i = Number(row.getAttribute("data-i"));
+        state.collaborators[i].name = inp.value;
+      });
+    });
+    Array.prototype.forEach.call(host.querySelectorAll("[data-remove]"), function(btn){
+      btn.onclick = function(){
+        state.collaborators.splice(Number(btn.getAttribute("data-remove")), 1);
+        renderCollabs();
+      };
+    });
+  }
+
+  function renderComments(){
+    var host = document.getElementById("commentsListHost");
+    var foot = document.getElementById("commentsFootnote");
+    if (!state.comments.length){
+      host.innerHTML = '<p class="muted-small" style="margin:0;">Nenhum comentário registrado ainda.</p>';
+      foot.textContent = "";
+      return;
+    }
+    var list = state.comments.slice().sort(function(a,b){ return (a.weeksAgo||0) - (b.weeksAgo||0); });
+    host.innerHTML = list.map(function(c){
+      return '<div class="comment-card">'+
+        '<div class="chead">'+
+          '<span class="cname">'+esc(c.name)+'</span>'+
+          '<span class="stars" aria-label="'+esc(c.rating)+' de 5 estrelas">'+starsHtml(c.rating)+'</span>'+
+          '<span class="cwhen">'+esc(weeksAgoLabel(c.weeksAgo))+'</span>'+
+        '</div>'+
+        '<div class="ctext">'+esc(c.text)+'</div>'+
+        (c.ownerReply ? '<div class="creply"><b>Resposta do Rango do Chef:</b> '+esc(c.ownerReply)+'</div>' : '')+
+        '</div>';
+    }).join("");
+    foot.textContent = state.extraRatedNoText ? state.extraRatedNoText : "";
+  }
+
+  function renderLastUpdated(){
+    var el = document.getElementById("lastUpdated");
+    var candidates = [state.weeksUpdatedAt, state.statsUpdatedAt, state.goalUpdatedAt].filter(Boolean);
+    if (!candidates.length){ el.textContent = ""; return; }
+    var latest = candidates.reduce(function(a,b){ return (new Date(a) > new Date(b)) ? a : b; });
+    var f = fmtDateTime(latest);
+    el.textContent = f ? ("Última atualização: " + f) : "";
+  }
+
+  function renderAll(){
+    renderLastUpdated();
+    renderMapsForm();
+    renderGoal();
+    renderGoalChart();
+    renderStats();
+    renderChart();
+    renderHistory();
+    renderCollabs();
+    renderComments();
+  }
+
+  // ---------------- persistence ----------------
+
+  function persistConfig(opts){
+    opts = opts || {};
+    if (!configRef) return;
+    var status = document.getElementById("saveStatus");
+    if (!opts.silent) status.textContent = "salvando…";
+    configRef.set({
+      collaborators: state.collaborators,
+      mapsUrl: state.mapsUrl,
+      updatedAt: new Date().toISOString()
+    }).then(function(){
+      if (!opts.silent){
+        status.textContent = "salvo ✓";
+        setTimeout(function(){ status.textContent = ""; }, 2200);
+      }
+    }).catch(function(){
+      if (!opts.silent) status.textContent = "não foi possível salvar";
+    });
+  }
+
+  function init(){
+    var weekInput = document.getElementById("weekStart");
+    weekInput.value = toISODate(mostRecentMonday());
+
+    document.getElementById("addCollabBtn").onclick = function(){
+      state.collaborators.push({id: uid(), name:""});
+      renderCollabs();
+    };
+    document.getElementById("saveConfigBtn").onclick = function(){ persistConfig(); };
+
+    var tabPainelBtn = document.getElementById("tabBtnPainel");
+    var tabComentariosBtn = document.getElementById("tabBtnComentarios");
+    var viewPainel = document.getElementById("viewPainel");
+    var viewComments = document.getElementById("viewComments");
+    function showTab(which){
+      var painel = which === "painel";
+      viewPainel.hidden = !painel;
+      viewComments.hidden = painel;
+      tabPainelBtn.classList.toggle("active", painel);
+      tabComentariosBtn.classList.toggle("active", !painel);
+    }
+    tabPainelBtn.onclick = function(){ showTab("painel"); };
+    tabComentariosBtn.onclick = function(){ showTab("comentarios"); };
+
+    document.getElementById("logForm").addEventListener("submit", function(ev){
+      ev.preventDefault();
+      var ws = document.getElementById("weekStart").value;
+      var total = Number(document.getElementById("totalInput").value);
+      var loggedBy = document.getElementById("loggedBy").value.trim();
+      if (!ws || isNaN(total)) return;
+      var we = toISODate(addDays(ws, 6));
+      if (weeksCol){
+        weeksCol.doc(ws).set({
+          weekStart: ws, weekEnd: we, totalReviews: total,
+          loggedBy: loggedBy, loggedAt: new Date().toISOString()
+        }).catch(function(){});
+      }
+      document.getElementById("totalInput").value = "";
+      document.getElementById("loggedBy").value = "";
+    });
+
+    // aplica os dados estáticos deste site antes da primeira renderização
+    state.weeks = STATIC_DATA.weeks.slice();
+    state.googleStats = STATIC_DATA.stats;
+    state.monthlyGoal = STATIC_DATA.goal.monthlyGoal;
+    state.monthlyBonusValue = STATIC_DATA.goal.monthlyBonusValue;
+    state.ratingGoal = STATIC_DATA.goal.ratingGoal;
+    state.goalUpdatedAt = STATIC_DATA.goal.updatedAt;
+    state.statsUpdatedAt = STATIC_DATA.stats.updatedAt;
+    var loggedAts = state.weeks.map(function(w){ return w.loggedAt; }).filter(Boolean);
+    state.weeksUpdatedAt = loggedAts.length ? loggedAts.reduce(function(a,b){ return (new Date(a) > new Date(b)) ? a : b; }) : null;
+    state.collaborators = (STATIC_DATA.settings.collaborators || []).slice();
+    state.mapsUrl = STATIC_DATA.settings.mapsUrl || "";
+    state.comments = STATIC_DATA.comments.slice();
+    state.extraRatedNoText = state.comments.length ? "Além destes, outras avaliações do período vieram só com nota, sem comentário escrito." : "";
+
+    renderAll();
+
+    if (window.claude && window.claude.use){
+      window.claude.use("db").then(function(d){
+        db = d;
+        if (!db) return; // no viewer db this session — page still works locally
+        configRef = db.doc("config/settings");
+        weeksCol = db.collection("weeks");
+
+        configRef.onSnapshot(function(snap){
+          if (snap.exists){
+            var data = snap.data() || {};
+            if (Array.isArray(data.collaborators)) state.collaborators = data.collaborators;
+            state.mapsUrl = data.mapsUrl || "";
+          }
+          renderAll();
+        }, function(){ /* degrade silently */ });
+
+        weeksCol.orderBy("weekStart","asc").limit(500).onSnapshot(function(qs){
+          state.weeks = qs.docs.map(function(d){
+            var data = d.data() || {};
+            return {
+              id: d.id,
+              weekStart: data.weekStart,
+              weekEnd: data.weekEnd,
+              totalReviews: Number(data.totalReviews||0),
+              avgRating: (data.avgRating===undefined||data.avgRating===null) ? null : Number(data.avgRating),
+              loggedBy: data.loggedBy || "",
+              loggedAt: data.loggedAt || null
+            };
+          });
+          var loggedAts = state.weeks.map(function(w){ return w.loggedAt; }).filter(Boolean);
+          state.weeksUpdatedAt = loggedAts.length ? loggedAts.reduce(function(a,b){ return (new Date(a) > new Date(b)) ? a : b; }) : null;
+          renderAll();
+        }, function(){ /* degrade silently */ });
+
+        goalRef = db.doc("config/goal");
+        goalRef.onSnapshot(function(snap){
+          if (snap.exists){
+            var gdata = snap.data() || {};
+            state.monthlyGoal = (gdata.monthlyGoal===undefined||gdata.monthlyGoal===null) ? 20 : Number(gdata.monthlyGoal);
+            state.monthlyBonusValue = (gdata.monthlyBonusValue===undefined||gdata.monthlyBonusValue===null) ? 0 : Number(gdata.monthlyBonusValue);
+            state.ratingGoal = (gdata.ratingGoal===undefined||gdata.ratingGoal===null) ? 4.7 : Number(gdata.ratingGoal);
+            state.goalUpdatedAt = gdata.updatedAt || null;
+          }
+          renderGoal();
+          renderGoalChart();
+          renderStats();
+          renderLastUpdated();
+        }, function(){ /* degrade silently */ });
+
+        statsRef = db.doc("stats/google");
+        statsRef.onSnapshot(function(snap){
+          state.googleStats = snap.exists ? (snap.data() || null) : null;
+          state.statsUpdatedAt = (state.googleStats && state.googleStats.updatedAt) || null;
+          renderAll();
+        }, function(){ /* degrade silently */ });
+
+        commentsCol = db.collection("comments");
+        commentsCol.onSnapshot(function(qs){
+          state.comments = qs.docs.map(function(d){
+            var data = d.data() || {};
+            return {
+              id: d.id, name: data.name || "", rating: Number(data.rating||0),
+              weeksAgo: Number(data.weeksAgo||0), text: data.text || "",
+              ownerReply: data.ownerReply || ""
+            };
+          });
+          state.extraRatedNoText = state.comments.length
+            ? "Além destes, mais 3 avaliações no último mês vieram só com nota (5★, 5★, 5★), sem comentário escrito."
+            : "";
+          renderAll();
+        }, function(){ /* degrade silently */ });
+      }).catch(function(){});
+    }
+  }
+
+  if (document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+})();
+</script>
+</body>
+</html>
