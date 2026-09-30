@@ -83,6 +83,7 @@
     font-variant-numeric:tabular-nums; letter-spacing:.01em;
   }
   .tile .foot{font-size:12.5px; color:var(--ink-faint); font-variant-numeric:tabular-nums;}
+  .tile .foot-calc{font-size:11.5px; color:var(--ink-faint); font-variant-numeric:tabular-nums; font-style:italic; margin-top:1px;}
   .tile.accent .big{color:var(--accent);}
   .pill{
     display:inline-flex; align-items:center; gap:6px; padding:3px 10px; border-radius:999px;
@@ -152,6 +153,16 @@
   td{padding:9px 10px; border-bottom:1px solid var(--border); white-space:nowrap; font-variant-numeric:tabular-nums;}
   tr:last-child td{border-bottom:none;}
   .empty-row td{color:var(--ink-faint); font-style:normal; white-space:normal;}
+  .hist-row{cursor:pointer;}
+  .hist-row:hover td{background:var(--surface-2);}
+  .hist-row .chevron{display:inline-block; margin-right:6px; color:var(--ink-faint); transition:transform .15s ease; font-size:10px;}
+  .hist-row.open .chevron{transform:rotate(90deg);}
+  .hist-detail td{background:var(--surface-2); white-space:normal;}
+  .breakdown-row{display:flex; align-items:center; gap:10px; padding:2px 0;}
+  .breakdown-row .bstars{min-width:78px;}
+  .breakdown-row .bbar{flex:1; max-width:180px; height:7px; background:var(--chip-bg); border-radius:999px; overflow:hidden;}
+  .breakdown-row .bbar > span{display:block; height:100%; background:var(--accent); border-radius:999px;}
+  .breakdown-row .bcount{min-width:80px; text-align:right; color:var(--ink-muted); font-variant-numeric:tabular-nums;}
 
   .collab-row{
     display:flex; gap:8px; align-items:center; background:var(--surface-2);
@@ -213,7 +224,7 @@
     <h1>Bônus por avaliações no Google</h1>
     <p class="sub">Contagem semanal de avaliações do Perfil da Empresa no Google, usada para calcular a bonificação do time de caixa.</p>
     <p class="muted-small" style="margin:8px 0 0; padding:8px 12px; background:var(--surface-2); border-radius:8px; display:inline-block;">📄 Versão pública deste painel — os números vêm de um arquivo de dados dentro deste mesmo site (não é uma conexão ao vivo). Alterações feitas nos formulários abaixo não são salvas permanentemente aqui.</p>
-    <p class="muted-small" style="margin:6px 0 0;"><span class="version-pill">v1.0</span><span id="lastUpdated">—</span></p>
+    <p class="muted-small" style="margin:6px 0 0;"><span class="version-pill">v1.6</span><span id="lastUpdated">—</span></p>
   </header>
 
   <div class="tabbar">
@@ -240,12 +251,26 @@
         <span class="pill neutral" id="ratingGoalPill" style="color:var(--gold);">meta —</span>
       </span>
       <span class="foot" id="statRatingFoot">—</span>
+      <span class="foot-calc" id="statRatingCalc"></span>
     </div>
     <div class="tile accent">
       <span class="label">Faltam para a meta</span>
       <span class="big" id="statRemaining">—</span>
       <span class="foot" id="statRemainingFoot">—</span>
     </div>
+  </div>
+
+  <div class="callout" id="ratingGapCallout" style="flex-direction:column; align-items:stretch; gap:10px;">
+    <span class="muted-small" style="text-transform:uppercase; letter-spacing:.06em; font-weight:600; color:var(--ink-muted);">Quanto falta para subir a nota</span>
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+      <span>Para chegar a <strong style="color:var(--gold);">4,60 ★</strong></span>
+      <span class="pill neutral" id="gap46Pill">—</span>
+    </div>
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+      <span>Para chegar a <strong style="color:var(--gold);">4,70 ★</strong> (meta)</span>
+      <span class="pill neutral" id="gap47Pill">—</span>
+    </div>
+    <p class="muted-small" id="oneStarCuriosity" style="margin:4px 0 0; font-style:italic;"></p>
   </div>
 
   <div class="callout" id="goalCallout" style="flex-direction:column; align-items:stretch;">
@@ -269,27 +294,8 @@
 
   <div class="grid">
     <div class="card">
-      <h2>Registrar contagem da semana</h2>
-      <p class="hint">Escolha a segunda-feira da semana e o total acumulado de avaliações no Google naquele dia.</p>
-      <form class="log" id="logForm">
-        <div class="field">
-          <label for="weekStart">Semana (segunda-feira)</label>
-          <input type="date" id="weekStart" required>
-        </div>
-        <div class="field small">
-          <label for="totalInput">Total acumulado</label>
-          <input type="number" id="totalInput" min="0" step="1" placeholder="ex: 214" required>
-        </div>
-        <div class="field grow">
-          <label for="loggedBy">Registrado por (opcional)</label>
-          <input type="text" id="loggedBy" placeholder="seu nome">
-        </div>
-        <button class="primary" type="submit">Registrar</button>
-      </form>
-
-      <hr class="divider">
-
-      <h2 style="margin-top:2px;">Histórico semanal</h2>
+      <h2>Histórico semanal</h2>
+      <p class="hint">Contagem atualizada automaticamente a cada verificação no Google. Clique em uma semana para ver o detalhamento por nota.</p>
       <div class="chart-wrap" id="chartHost"></div>
       <div class="table-wrap">
         <table id="historyTable">
@@ -416,6 +422,7 @@
       "weekEnd": "2026-06-14",
       "totalReviews": 317,
       "avgRating": 5,
+      "ratingBreakdown": null,
       "loggedBy": "automação (Google Maps)",
       "loggedAt": "2026-09-11T00:00:00.000Z"
     },
@@ -425,6 +432,7 @@
       "weekEnd": "2026-06-21",
       "totalReviews": 319,
       "avgRating": 4,
+      "ratingBreakdown": null,
       "loggedBy": "automação (Google Maps)",
       "loggedAt": "2026-09-11T00:00:00.000Z"
     },
@@ -434,6 +442,7 @@
       "weekEnd": "2026-06-28",
       "totalReviews": 320,
       "avgRating": 5,
+      "ratingBreakdown": null,
       "loggedBy": "automação (Google Maps)",
       "loggedAt": "2026-09-11T00:00:00.000Z"
     },
@@ -443,6 +452,7 @@
       "weekEnd": "2026-07-05",
       "totalReviews": 320,
       "avgRating": null,
+      "ratingBreakdown": null,
       "loggedBy": "automação (Google Maps)",
       "loggedAt": "2026-09-11T00:00:00.000Z"
     },
@@ -452,6 +462,7 @@
       "weekEnd": "2026-07-12",
       "totalReviews": 321,
       "avgRating": 1,
+      "ratingBreakdown": null,
       "loggedBy": "automação (Google Maps)",
       "loggedAt": "2026-09-11T00:00:00.000Z"
     },
@@ -461,6 +472,7 @@
       "weekEnd": "2026-07-19",
       "totalReviews": 321,
       "avgRating": null,
+      "ratingBreakdown": null,
       "loggedBy": "automação (Google Maps)",
       "loggedAt": "2026-09-11T00:00:00.000Z"
     },
@@ -470,6 +482,7 @@
       "weekEnd": "2026-07-26",
       "totalReviews": 321,
       "avgRating": null,
+      "ratingBreakdown": null,
       "loggedBy": "automação (Google Maps)",
       "loggedAt": "2026-09-11T00:00:00.000Z"
     },
@@ -479,6 +492,7 @@
       "weekEnd": "2026-08-02",
       "totalReviews": 324,
       "avgRating": 5,
+      "ratingBreakdown": null,
       "loggedBy": "automação (Google Maps)",
       "loggedAt": "2026-09-11T00:00:00.000Z"
     },
@@ -488,6 +502,7 @@
       "weekEnd": "2026-08-09",
       "totalReviews": 326,
       "avgRating": 5,
+      "ratingBreakdown": null,
       "loggedBy": "automação (Google Maps)",
       "loggedAt": "2026-09-11T00:00:00.000Z"
     },
@@ -497,6 +512,7 @@
       "weekEnd": "2026-08-16",
       "totalReviews": 328,
       "avgRating": 5,
+      "ratingBreakdown": null,
       "loggedBy": "automação (Google Maps)",
       "loggedAt": "2026-09-11T00:00:00.000Z"
     },
@@ -506,6 +522,7 @@
       "weekEnd": "2026-08-23",
       "totalReviews": 331,
       "avgRating": 3.67,
+      "ratingBreakdown": null,
       "loggedBy": "automação (Google Maps)",
       "loggedAt": "2026-09-11T00:00:00.000Z"
     },
@@ -515,6 +532,7 @@
       "weekEnd": "2026-08-30",
       "totalReviews": 332,
       "avgRating": 5,
+      "ratingBreakdown": null,
       "loggedBy": "automação (Google Maps)",
       "loggedAt": "2026-09-11T00:00:00.000Z"
     },
@@ -524,6 +542,7 @@
       "weekEnd": "2026-09-06",
       "totalReviews": 332,
       "avgRating": null,
+      "ratingBreakdown": null,
       "loggedBy": "automação (Google Maps)",
       "loggedAt": "2026-09-11T00:00:00.000Z"
     },
@@ -533,6 +552,7 @@
       "weekEnd": "2026-09-13",
       "totalReviews": 332,
       "avgRating": null,
+      "ratingBreakdown": null,
       "loggedBy": "automação (Google Maps)",
       "loggedAt": "2026-09-11T00:00:00.000Z"
     },
@@ -541,7 +561,14 @@
       "weekStart": "2026-09-14",
       "weekEnd": "2026-09-20",
       "totalReviews": 332,
-      "avgRating": 4.5,
+      "avgRating": null,
+      "ratingBreakdown": {
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+        "5": 0
+      },
       "loggedBy": "automação (Google Maps)",
       "loggedAt": "2026-09-20T00:00:00.000Z"
     },
@@ -550,18 +577,32 @@
       "weekStart": "2026-09-21",
       "weekEnd": "2026-09-27",
       "totalReviews": 338,
-      "avgRating": 4.5,
+      "avgRating": 5,
+      "ratingBreakdown": {
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+        "5": 6
+      },
       "loggedBy": "Claude (verificação manual)",
-      "loggedAt": "2026-09-23T14:07:10.677229Z"
+      "loggedAt": "2026-09-23T00:00:00.000Z"
     },
     {
       "id": "2026-09-28",
       "weekStart": "2026-09-28",
       "weekEnd": "2026-10-04",
       "totalReviews": 347,
-      "avgRating": 4.5,
+      "avgRating": 5,
+      "ratingBreakdown": {
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+        "5": 9
+      },
       "loggedBy": "Claude (verificação manual)",
-      "loggedAt": "2026-09-28T22:47:04.342284Z"
+      "loggedAt": "2026-09-30T14:00:00.000Z"
     }
   ],
   "stats": {
@@ -570,17 +611,17 @@
       "2": 4,
       "3": 11,
       "4": 8,
-      "5": 278
+      "5": 293
     },
     "rating": 4.5,
     "totalReviews": 347,
-    "updatedAt": "2026-09-28T22:47:04.351920Z"
+    "updatedAt": "2026-09-30T14:00:00.000Z"
   },
   "goal": {
     "monthlyGoal": 20,
     "monthlyBonusValue": 0,
     "ratingGoal": 4.7,
-    "updatedAt": "2026-09-11T00:00:00.000Z"
+    "updatedAt": "2026-09-30T11:31:10.747Z"
   },
   "settings": {
     "collaborators": [],
@@ -629,6 +670,28 @@
 
   function monthKey(iso){ return String(iso||"").slice(0,7); }
 
+  // Our own weighted average from the star-distribution snapshot (2 decimals),
+  // as opposed to Google's own rounded-to-1-decimal display.
+  function computeDistAvg(dist){
+    if (!dist) return null;
+    var sum = 0, total = 0;
+    [1,2,3,4,5].forEach(function(k){
+      var c = Number(dist[k] !== undefined ? dist[k] : (dist[String(k)] || 0));
+      sum += k*c; total += c;
+    });
+    if (!total) return null;
+    return {avg: sum/total, sum: sum, total: total};
+  }
+
+  // Approx. how many additional 5★ reviews (with no other reviews added)
+  // it would take to raise the weighted average up to `target`.
+  function starsNeededFor(target, sum, total){
+    if (target >= 5) return null;
+    var numerator = target*total - sum;
+    if (numerator <= 0) return 0;
+    return Math.ceil(numerator / (5 - target) - 1e-9);
+  }
+
   function computeMonthWeeks(){
     var series = computeSeries();
     var mk = monthKey(toISODate(new Date()));
@@ -645,6 +708,16 @@
     return weeksInMonth.length ? weeksInMonth[weeksInMonth.length-1].cumulative : 0;
   }
 
+  // Last `n` weeks that have a known delta (i.e. not the very first week
+  // ever logged, which has no prior total to compare against), oldest first.
+  // Used for the rolling weekly chart so it always shows a full, consistent
+  // set of bars instead of resetting to almost nothing at the start of
+  // each calendar month.
+  function computeLastWeeks(n){
+    var series = computeSeries().filter(function(s){ return s.delta !== null; });
+    return series.slice(-n);
+  }
+
   function persistGoal(){
     if (!goalRef) return;
     goalRef.set({
@@ -657,41 +730,38 @@
 
   function renderGoalChart(){
     var host = document.getElementById("goalChartHost");
-    var weeksInMonth = computeMonthWeeks();
-    var goal = Number(state.monthlyGoal || 0);
-    if (!weeksInMonth.length){
-      host.innerHTML = '<p class="muted-small" style="margin:2px 0 0;">O gráfico aparece assim que houver contagens registradas neste mês.</p>';
+    var weeks = computeLastWeeks(20);
+    if (!weeks.length){
+      host.innerHTML = '<p class="muted-small" style="margin:2px 0 0;">O gráfico aparece a partir da 2ª semana registrada.</p>';
       return;
     }
-    var barW = 34, gap = 14, padL = 34, padR = 10, padT = 12, padB = 22;
-    var chartH = 110;
-    var w = padL + padR + weeksInMonth.length * (barW + gap) - gap;
-    var maxVal = Math.max(goal, Math.max.apply(null, weeksInMonth.map(function(s){ return s.cumulative; })), 1);
-    var niceMax = Math.ceil(maxVal / 5) * 5 || 5;
+
+    var barW = 26, gap = 8, padL = 30, padR = 8, padT = 18, padB = 20;
+    var chartH = 112;
+    var w = padL + padR + weeks.length * (barW + gap) - gap;
+    var maxGain = Math.max.apply(null, weeks.map(function(s){ return s.delta; }).concat([1]));
+    var niceMax = Math.max(maxGain, 1);
     var scaleH = chartH - padT - padB;
     function y(v){ return padT + scaleH - (v/niceMax)*scaleH; }
 
-    var goalY = y(Math.min(goal, niceMax));
-    var goalLine = goal > 0 ? (
-      '<line x1="'+padL+'" x2="'+(w-padR)+'" y1="'+goalY+'" y2="'+goalY+'" stroke="var(--gold)" stroke-width="1.5" stroke-dasharray="4,3"/>'+
-      '<text x="'+(w-padR)+'" y="'+(goalY-4)+'" text-anchor="end" font-size="10" fill="var(--gold)" font-family="IBM Plex Mono, monospace">meta '+goal+'</text>'
-    ) : "";
-
     var bars = "";
-    weeksInMonth.forEach(function(s, i){
+    weeks.forEach(function(s, i){
       var x = padL + i*(barW+gap);
-      var hit = goal > 0 && s.cumulative >= goal;
-      var color = hit ? "var(--good)" : "var(--accent)";
-      var barY = y(Math.max(0,s.cumulative));
-      var barH = Math.max(2, scaleH + padT - barY);
-      bars += '<rect x="'+x+'" y="'+barY+'" width="'+barW+'" height="'+barH+'" rx="4" fill="'+color+'"/>';
-      bars += '<text x="'+(x+barW/2)+'" y="'+(barY-6)+'" text-anchor="middle" font-size="11" font-weight="600" fill="var(--ink)" font-family="IBM Plex Mono, monospace">'+s.cumulative+'</text>';
-      bars += '<text x="'+(x+barW/2)+'" y="'+(chartH-6)+'" text-anchor="middle" font-size="10" fill="var(--ink-faint)">'+fmtDate(s.weekStart)+'</text>';
+      var gain = s.delta;
+      var color = gain > 0 ? "var(--accent)" : "var(--chip-bg)";
+      var barY = y(Math.max(0, gain));
+      var barH = Math.max(gain>0 ? 2 : 1, scaleH + padT - barY);
+      bars += '<rect x="'+x+'" y="'+barY+'" width="'+barW+'" height="'+barH+'" rx="3" fill="'+color+'"/>';
+      if (gain > 0){
+        bars += '<text x="'+(x+barW/2)+'" y="'+(barY-4)+'" text-anchor="middle" font-size="10" font-weight="600" fill="var(--ink)" font-family="IBM Plex Mono, monospace">'+gain+'</text>';
+      }
+      bars += '<text x="'+(x+barW/2)+'" y="'+(chartH-6)+'" text-anchor="middle" font-size="9.5" fill="var(--ink-faint)">'+fmtDate(s.weekStart)+'</text>';
     });
 
-    host.innerHTML = '<svg width="'+w+'" height="'+chartH+'" viewBox="0 0 '+w+' '+chartH+'" role="img" aria-label="progresso acumulado de avaliações no mês em relação à meta">'+
-      goalLine + bars +
-      '</svg>';
+    host.innerHTML = '<svg width="'+w+'" height="'+chartH+'" viewBox="0 0 '+w+' '+chartH+'" role="img" aria-label="avaliações novas por semana, últimas 20 semanas">'+
+      bars +
+      '</svg>'+
+      '<p class="muted-small" style="margin:6px 0 0;">Últimas 20 semanas — cada barra é a quantidade de avaliações novas naquela semana (não acumula; o acúmulo do mês aparece na meta acima).</p>';
   }
 
   function renderGoal(){
@@ -817,7 +887,55 @@
       ratingGoalPill.style.color = "var(--ink-faint)";
     }
 
+    var calcEl = document.getElementById("statRatingCalc");
+    var distInfo = state.googleStats ? computeDistAvg(state.googleStats.dist) : null;
+    if (distInfo){
+      calcEl.textContent = "nossa conta: " + distInfo.avg.toLocaleString("pt-BR", {minimumFractionDigits:2, maximumFractionDigits:2});
+    } else {
+      calcEl.textContent = "";
+    }
+    renderRatingGap(distInfo);
+
     renderSpark(series);
+  }
+
+  function renderRatingGap(distInfo){
+    var p46 = document.getElementById("gap46Pill");
+    var p47 = document.getElementById("gap47Pill");
+    if (!p46 || !p47) return;
+    if (!distInfo){
+      p46.className = "pill neutral"; p46.textContent = "—";
+      p47.className = "pill neutral"; p47.textContent = "—";
+      return;
+    }
+    [[4.6, p46], [4.7, p47]].forEach(function(pair){
+      var target = pair[0], el = pair[1];
+      var need = starsNeededFor(target, distInfo.sum, distInfo.total);
+      if (need === 0){
+        el.className = "pill good";
+        el.textContent = "já alcançada ✓";
+      } else if (need !== null){
+        el.className = "pill neutral";
+        el.style.color = "var(--gold)";
+        el.textContent = "~" + need + " avaliações 5★";
+      } else {
+        el.className = "pill neutral";
+        el.textContent = "—";
+      }
+    });
+
+    var curiosityEl = document.getElementById("oneStarCuriosity");
+    if (curiosityEl){
+      if (distInfo && distInfo.avg > 1 && distInfo.avg < 5){
+        var deficit = distInfo.avg - 1;   // o quanto uma nota 1★ fica abaixo da média
+        var surplus = 5 - distInfo.avg;   // o quanto uma nota 5★ fica acima da média
+        var need = Math.ceil(deficit/surplus - 1e-9);
+        var avgStr = distInfo.avg.toLocaleString("pt-BR", {minimumFractionDigits:2, maximumFractionDigits:2});
+        curiosityEl.textContent = "Curiosidade: com a média atual (" + avgStr + "), cada avaliação 1★ puxa a nota para baixo o suficiente que seriam necessárias ~" + need + " avaliações 5★ só para anular esse efeito.";
+      } else {
+        curiosityEl.textContent = "";
+      }
+    }
   }
 
   function renderSpark(series){
@@ -886,6 +1004,30 @@
       '</svg>';
   }
 
+  function renderRatingBreakdown(s){
+    var bd = s.ratingBreakdown;
+    if (!bd){
+      return '<p class="muted-small" style="margin:4px 0;">Detalhamento por nota não registrado para esta semana — essa checagem passou a ser feita a partir de setembro/2026.</p>';
+    }
+    var counts = [5,4,3,2,1].map(function(star){
+      return {star: star, count: Number(bd[star] !== undefined ? bd[star] : (bd[String(star)]||0))};
+    });
+    var total = counts.reduce(function(a,c){ return a + c.count; }, 0);
+    var maxC = Math.max.apply(null, counts.map(function(c){ return c.count; }).concat([1]));
+    var html = '<div style="padding:8px 2px;">';
+    html += '<p class="muted-small" style="margin:0 0 6px; font-weight:600; color:var(--ink);">'+total+' avaliaç'+(total===1?'ão':'ões')+' nova'+(total===1?'':'s')+' nesta semana:</p>';
+    counts.forEach(function(c){
+      var pct = maxC ? (c.count/maxC*100) : 0;
+      html += '<div class="breakdown-row">'+
+        '<span class="stars bstars">'+starsHtml(c.star)+'</span>'+
+        '<span class="bbar"><span style="width:'+pct+'%;"></span></span>'+
+        '<span class="bcount">'+c.count+' avaliaç'+(c.count===1?'ão':'ões')+'</span>'+
+        '</div>';
+    });
+    html += '</div>';
+    return html;
+  }
+
   function renderHistory(){
     var series = computeSeries().slice().reverse();
     var body = document.getElementById("historyBody");
@@ -893,15 +1035,27 @@
       body.innerHTML = '<tr class="empty-row"><td colspan="5">Nenhuma semana registrada ainda. Use o formulário acima para registrar a contagem atual e começar o histórico.</td></tr>';
       return;
     }
-    body.innerHTML = series.map(function(s){
-      return '<tr>'+
-        '<td>'+fmtDate(s.weekStart)+' – '+fmtDate(s.weekEnd)+'</td>'+
+    body.innerHTML = series.map(function(s, i){
+      var mainRow = '<tr class="hist-row" data-idx="'+i+'">'+
+        '<td><span class="chevron">▶</span>'+fmtDate(s.weekStart)+' – '+fmtDate(s.weekEnd)+'</td>'+
         '<td>'+s.totalReviews+'</td>'+
         '<td>'+(s.delta===null? "—" : (s.delta>=0?"+":"")+s.delta)+'</td>'+
         '<td>'+(s.avgRating? Number(s.avgRating).toLocaleString("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1}) : "—")+'</td>'+
         '<td>'+esc(s.loggedBy||"—")+'</td>'+
         '</tr>';
+      var detailRow = '<tr class="hist-detail" data-idx="'+i+'" hidden><td colspan="5">'+renderRatingBreakdown(s)+'</td></tr>';
+      return mainRow + detailRow;
     }).join("");
+
+    Array.prototype.forEach.call(body.querySelectorAll(".hist-row"), function(row){
+      row.addEventListener("click", function(){
+        var idx = row.getAttribute("data-idx");
+        var detail = body.querySelector('.hist-detail[data-idx="'+idx+'"]');
+        if (!detail) return;
+        detail.hidden = !detail.hidden;
+        row.classList.toggle("open", !detail.hidden);
+      });
+    });
   }
 
   function renderCollabs(){
@@ -997,9 +1151,6 @@
   }
 
   function init(){
-    var weekInput = document.getElementById("weekStart");
-    weekInput.value = toISODate(mostRecentMonday());
-
     document.getElementById("addCollabBtn").onclick = function(){
       state.collaborators.push({id: uid(), name:""});
       renderCollabs();
@@ -1019,23 +1170,6 @@
     }
     tabPainelBtn.onclick = function(){ showTab("painel"); };
     tabComentariosBtn.onclick = function(){ showTab("comentarios"); };
-
-    document.getElementById("logForm").addEventListener("submit", function(ev){
-      ev.preventDefault();
-      var ws = document.getElementById("weekStart").value;
-      var total = Number(document.getElementById("totalInput").value);
-      var loggedBy = document.getElementById("loggedBy").value.trim();
-      if (!ws || isNaN(total)) return;
-      var we = toISODate(addDays(ws, 6));
-      if (weeksCol){
-        weeksCol.doc(ws).set({
-          weekStart: ws, weekEnd: we, totalReviews: total,
-          loggedBy: loggedBy, loggedAt: new Date().toISOString()
-        }).catch(function(){});
-      }
-      document.getElementById("totalInput").value = "";
-      document.getElementById("loggedBy").value = "";
-    });
 
     // aplica os dados estáticos deste site antes da primeira renderização
     state.weeks = STATIC_DATA.weeks.slice();
@@ -1079,6 +1213,7 @@
               weekEnd: data.weekEnd,
               totalReviews: Number(data.totalReviews||0),
               avgRating: (data.avgRating===undefined||data.avgRating===null) ? null : Number(data.avgRating),
+              ratingBreakdown: data.ratingBreakdown || null,
               loggedBy: data.loggedBy || "",
               loggedAt: data.loggedAt || null
             };
