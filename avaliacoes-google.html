@@ -1,8 +1,4 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>Bônus por Avaliações</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -216,15 +212,13 @@
   }
   .comment-card .creply b{color:var(--ink);}
 </style>
-</head>
-<body>
+
 <div class="wrap">
   <header class="top">
     <span class="eyebrow" id="restName">Rango do Chef</span>
     <h1>Bônus por avaliações no Google</h1>
     <p class="sub">Contagem semanal de avaliações do Perfil da Empresa no Google, usada para calcular a bonificação do time de caixa.</p>
-    <p class="muted-small" style="margin:8px 0 0; padding:8px 12px; background:var(--surface-2); border-radius:8px; display:inline-block;">📄 Versão pública deste painel — os números vêm de um arquivo de dados dentro deste mesmo site (não é uma conexão ao vivo). Alterações feitas nos formulários abaixo não são salvas permanentemente aqui.</p>
-    <p class="muted-small" style="margin:6px 0 0;"><span class="version-pill">v1.6</span><span id="lastUpdated">—</span></p>
+    <p class="muted-small" style="margin:6px 0 0;"><span class="version-pill">v1.7</span><span id="lastUpdated">—</span></p>
   </header>
 
   <div class="tabbar">
@@ -409,252 +403,6 @@
   var db = null;
   var configRef = null, weeksCol = null, statsRef = null, commentsCol = null, goalRef = null;
 
-  // ============================================================
-  // DADOS ESTÁTICOS DESTE SITE — edite os números abaixo para atualizar
-  // o painel (essa versão fora do Claude não tem banco de dados ao vivo,
-  // então os dados vêm deste bloco em vez de se atualizarem sozinhos).
-  // ============================================================
-  var STATIC_DATA = {
-  "weeks": [
-    {
-      "id": "2026-06-08",
-      "weekStart": "2026-06-08",
-      "weekEnd": "2026-06-14",
-      "totalReviews": 317,
-      "avgRating": 5,
-      "ratingBreakdown": null,
-      "loggedBy": "automação (Google Maps)",
-      "loggedAt": "2026-09-11T00:00:00.000Z"
-    },
-    {
-      "id": "2026-06-15",
-      "weekStart": "2026-06-15",
-      "weekEnd": "2026-06-21",
-      "totalReviews": 319,
-      "avgRating": 4,
-      "ratingBreakdown": null,
-      "loggedBy": "automação (Google Maps)",
-      "loggedAt": "2026-09-11T00:00:00.000Z"
-    },
-    {
-      "id": "2026-06-22",
-      "weekStart": "2026-06-22",
-      "weekEnd": "2026-06-28",
-      "totalReviews": 320,
-      "avgRating": 5,
-      "ratingBreakdown": null,
-      "loggedBy": "automação (Google Maps)",
-      "loggedAt": "2026-09-11T00:00:00.000Z"
-    },
-    {
-      "id": "2026-06-29",
-      "weekStart": "2026-06-29",
-      "weekEnd": "2026-07-05",
-      "totalReviews": 320,
-      "avgRating": null,
-      "ratingBreakdown": null,
-      "loggedBy": "automação (Google Maps)",
-      "loggedAt": "2026-09-11T00:00:00.000Z"
-    },
-    {
-      "id": "2026-07-06",
-      "weekStart": "2026-07-06",
-      "weekEnd": "2026-07-12",
-      "totalReviews": 321,
-      "avgRating": 1,
-      "ratingBreakdown": null,
-      "loggedBy": "automação (Google Maps)",
-      "loggedAt": "2026-09-11T00:00:00.000Z"
-    },
-    {
-      "id": "2026-07-13",
-      "weekStart": "2026-07-13",
-      "weekEnd": "2026-07-19",
-      "totalReviews": 321,
-      "avgRating": null,
-      "ratingBreakdown": null,
-      "loggedBy": "automação (Google Maps)",
-      "loggedAt": "2026-09-11T00:00:00.000Z"
-    },
-    {
-      "id": "2026-07-20",
-      "weekStart": "2026-07-20",
-      "weekEnd": "2026-07-26",
-      "totalReviews": 321,
-      "avgRating": null,
-      "ratingBreakdown": null,
-      "loggedBy": "automação (Google Maps)",
-      "loggedAt": "2026-09-11T00:00:00.000Z"
-    },
-    {
-      "id": "2026-07-27",
-      "weekStart": "2026-07-27",
-      "weekEnd": "2026-08-02",
-      "totalReviews": 324,
-      "avgRating": 5,
-      "ratingBreakdown": null,
-      "loggedBy": "automação (Google Maps)",
-      "loggedAt": "2026-09-11T00:00:00.000Z"
-    },
-    {
-      "id": "2026-08-03",
-      "weekStart": "2026-08-03",
-      "weekEnd": "2026-08-09",
-      "totalReviews": 326,
-      "avgRating": 5,
-      "ratingBreakdown": null,
-      "loggedBy": "automação (Google Maps)",
-      "loggedAt": "2026-09-11T00:00:00.000Z"
-    },
-    {
-      "id": "2026-08-10",
-      "weekStart": "2026-08-10",
-      "weekEnd": "2026-08-16",
-      "totalReviews": 328,
-      "avgRating": 5,
-      "ratingBreakdown": null,
-      "loggedBy": "automação (Google Maps)",
-      "loggedAt": "2026-09-11T00:00:00.000Z"
-    },
-    {
-      "id": "2026-08-17",
-      "weekStart": "2026-08-17",
-      "weekEnd": "2026-08-23",
-      "totalReviews": 331,
-      "avgRating": 3.67,
-      "ratingBreakdown": null,
-      "loggedBy": "automação (Google Maps)",
-      "loggedAt": "2026-09-11T00:00:00.000Z"
-    },
-    {
-      "id": "2026-08-24",
-      "weekStart": "2026-08-24",
-      "weekEnd": "2026-08-30",
-      "totalReviews": 332,
-      "avgRating": 5,
-      "ratingBreakdown": null,
-      "loggedBy": "automação (Google Maps)",
-      "loggedAt": "2026-09-11T00:00:00.000Z"
-    },
-    {
-      "id": "2026-08-31",
-      "weekStart": "2026-08-31",
-      "weekEnd": "2026-09-06",
-      "totalReviews": 332,
-      "avgRating": null,
-      "ratingBreakdown": null,
-      "loggedBy": "automação (Google Maps)",
-      "loggedAt": "2026-09-11T00:00:00.000Z"
-    },
-    {
-      "id": "2026-09-07",
-      "weekStart": "2026-09-07",
-      "weekEnd": "2026-09-13",
-      "totalReviews": 332,
-      "avgRating": null,
-      "ratingBreakdown": null,
-      "loggedBy": "automação (Google Maps)",
-      "loggedAt": "2026-09-11T00:00:00.000Z"
-    },
-    {
-      "id": "2026-09-14",
-      "weekStart": "2026-09-14",
-      "weekEnd": "2026-09-20",
-      "totalReviews": 332,
-      "avgRating": null,
-      "ratingBreakdown": {
-        "1": 0,
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0
-      },
-      "loggedBy": "automação (Google Maps)",
-      "loggedAt": "2026-09-20T00:00:00.000Z"
-    },
-    {
-      "id": "2026-09-21",
-      "weekStart": "2026-09-21",
-      "weekEnd": "2026-09-27",
-      "totalReviews": 338,
-      "avgRating": 5,
-      "ratingBreakdown": {
-        "1": 0,
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 6
-      },
-      "loggedBy": "Claude (verificação manual)",
-      "loggedAt": "2026-09-23T00:00:00.000Z"
-    },
-    {
-      "id": "2026-09-28",
-      "weekStart": "2026-09-28",
-      "weekEnd": "2026-10-04",
-      "totalReviews": 355,
-      "avgRating": 5,
-      "ratingBreakdown": {
-        "1": 0,
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 17
-      },
-      "loggedBy": "Claude (verificação manual)",
-      "loggedAt": "2026-10-01T20:59:12.000Z"
-    }
-  ],
-  "stats": {
-    "dist": {
-      "1": 31,
-      "2": 4,
-      "3": 11,
-      "4": 8,
-      "5": 301
-    },
-    "rating": 4.5,
-    "totalReviews": 355,
-    "updatedAt": "2026-10-01T20:59:12.000Z"
-  },
-  "goal": {
-    "monthlyGoal": 20,
-    "monthlyBonusValue": 0,
-    "ratingGoal": 4.7,
-    "updatedAt": "2026-09-30T11:31:10.747Z"
-  },
-  "settings": {
-    "collaborators": [],
-    "mapsUrl": ""
-  },
-  "comments": [
-    {
-      "id": "c1",
-      "name": "Dinda YouTube",
-      "rating": 5,
-      "weeksAgo": 3,
-      "text": "Comida sempre muito saborosa, chega quentinha o atendimento no 10000..!! Obrigada 🙏 vocês são de mais",
-      "ownerReply": "Obrigado Dinda!! Até a próxima!"
-    },
-    {
-      "id": "c2",
-      "name": "GabrielWinns",
-      "rating": 5,
-      "weeksAgo": 0,
-      "text": "Comida deliciosa gostinho de caseira, entrega rapida, chegou no tempo certo, pessoas educadas e respondem rápido, super recomendo 🙏❤️",
-      "ownerReply": "Obrigado gabriel! Seu Feedback é muito importante para nossa equipe"
-    },
-    {
-      "id": "c3",
-      "name": "Ezequiel Fagundes",
-      "rating": 5,
-      "weeksAgo": 0,
-      "text": "Comida top, entrega super rápido, chegou antes do tempo estimado, super recomendo 🏆",
-      "ownerReply": "Obrigado!!"
-    }
-  ]
-};
-
   // ---------------- rendering ----------------
 
   function computeSeries(){
@@ -710,12 +458,62 @@
 
   // Last `n` weeks that have a known delta (i.e. not the very first week
   // ever logged, which has no prior total to compare against), oldest first.
-  // Used for the rolling weekly chart so it always shows a full, consistent
-  // set of bars instead of resetting to almost nothing at the start of
-  // each calendar month.
   function computeLastWeeks(n){
     var series = computeSeries().filter(function(s){ return s.delta !== null; });
     return series.slice(-n);
+  }
+
+  // Rolling window of the last `n` calendar days (today included), each with
+  // an estimated count of new reviews that day. Since totals are only
+  // actually checked periodically (not every single day), each week's known
+  // delta is spread evenly across the calendar days it covers (weekStart..
+  // weekEnd, clipped to "today" for the week still in progress) — the same
+  // approach used before, just re-sliced into a trailing window instead of
+  // the current calendar month. Being a trailing window (not tied to the
+  // calendar month), it always advances by itself: the oldest day drops off
+  // and the newest day appears at the end, with no monthly reset.
+  function computeLastNDays(n){
+    var series = computeSeries().filter(function(s){ return s.delta !== null; });
+    var today = new Date(); today.setHours(0,0,0,0);
+    var todayIso = toISODate(today);
+    var startDate = new Date(today);
+    startDate.setDate(startDate.getDate() - (n - 1));
+
+    var perDay = {};
+    for (var i = 0; i < n; i++){
+      var d = new Date(startDate);
+      d.setDate(d.getDate() + i);
+      perDay[toISODate(d)] = 0;
+    }
+
+    series.forEach(function(s){
+      var delta = s.delta;
+      if (!delta) return;
+      var startIso = s.weekStart;
+      var endIso = (s.weekEnd && s.weekEnd < todayIso) ? s.weekEnd : todayIso;
+      if (endIso < startIso) endIso = startIso;
+      var days = [];
+      var cursor = new Date(startIso + "T00:00:00");
+      var end = new Date(endIso + "T00:00:00");
+      while (cursor <= end){
+        days.push(toISODate(cursor));
+        cursor.setDate(cursor.getDate()+1);
+      }
+      if (!days.length) days = [startIso];
+      var base = Math.floor(delta / days.length);
+      var rem = delta - base*days.length;
+      days.forEach(function(iso, idx){
+        if (!(iso in perDay)) return;
+        var share = base + (idx < rem ? 1 : 0);
+        perDay[iso] += share;
+      });
+    });
+
+    var out = [];
+    Object.keys(perDay).sort().forEach(function(iso){
+      out.push({date: iso, gain: perDay[iso]});
+    });
+    return out;
   }
 
   function persistGoal(){
@@ -730,38 +528,41 @@
 
   function renderGoalChart(){
     var host = document.getElementById("goalChartHost");
-    var weeks = computeLastWeeks(20);
-    if (!weeks.length){
+    var days = computeLastNDays(30);
+    if (!days.length){
       host.innerHTML = '<p class="muted-small" style="margin:2px 0 0;">O gráfico aparece a partir da 2ª semana registrada.</p>';
       return;
     }
 
-    var barW = 26, gap = 8, padL = 30, padR = 8, padT = 18, padB = 20;
-    var chartH = 112;
-    var w = padL + padR + weeks.length * (barW + gap) - gap;
-    var maxGain = Math.max.apply(null, weeks.map(function(s){ return s.delta; }).concat([1]));
+    var barW = 14, gap = 3, padL = 26, padR = 6, padT = 18, padB = 24;
+    var chartH = 118;
+    var w = padL + padR + days.length * (barW + gap) - gap;
+    var maxGain = Math.max.apply(null, days.map(function(d){ return d.gain; }).concat([1]));
     var niceMax = Math.max(maxGain, 1);
     var scaleH = chartH - padT - padB;
     function y(v){ return padT + scaleH - (v/niceMax)*scaleH; }
 
     var bars = "";
-    weeks.forEach(function(s, i){
+    days.forEach(function(d, i){
       var x = padL + i*(barW+gap);
-      var gain = s.delta;
+      var gain = d.gain;
       var color = gain > 0 ? "var(--accent)" : "var(--chip-bg)";
       var barY = y(Math.max(0, gain));
       var barH = Math.max(gain>0 ? 2 : 1, scaleH + padT - barY);
       bars += '<rect x="'+x+'" y="'+barY+'" width="'+barW+'" height="'+barH+'" rx="3" fill="'+color+'"/>';
       if (gain > 0){
-        bars += '<text x="'+(x+barW/2)+'" y="'+(barY-4)+'" text-anchor="middle" font-size="10" font-weight="600" fill="var(--ink)" font-family="IBM Plex Mono, monospace">'+gain+'</text>';
+        bars += '<text x="'+(x+barW/2)+'" y="'+(barY-4)+'" text-anchor="middle" font-size="9" font-weight="600" fill="var(--ink)" font-family="IBM Plex Mono, monospace">'+gain+'</text>';
       }
-      bars += '<text x="'+(x+barW/2)+'" y="'+(chartH-6)+'" text-anchor="middle" font-size="9.5" fill="var(--ink-faint)">'+fmtDate(s.weekStart)+'</text>';
+      // show a date label only every ~5th day (and the last one) to avoid crowding
+      if (i % 5 === 0 || i === days.length-1){
+        bars += '<text x="'+(x+barW/2)+'" y="'+(chartH-8)+'" text-anchor="middle" font-size="9" fill="var(--ink-faint)">'+fmtDate(d.date)+'</text>';
+      }
     });
 
-    host.innerHTML = '<svg width="'+w+'" height="'+chartH+'" viewBox="0 0 '+w+' '+chartH+'" role="img" aria-label="avaliações novas por semana, últimas 20 semanas">'+
+    host.innerHTML = '<svg width="'+w+'" height="'+chartH+'" viewBox="0 0 '+w+' '+chartH+'" role="img" aria-label="avaliações novas por dia, últimos 30 dias">'+
       bars +
       '</svg>'+
-      '<p class="muted-small" style="margin:6px 0 0;">Últimas 20 semanas — cada barra é a quantidade de avaliações novas naquela semana (não acumula; o acúmulo do mês aparece na meta acima).</p>';
+      '<p class="muted-small" style="margin:6px 0 0;">Últimos 30 dias (atualiza sozinho todo dia — o mais antigo sai, o mais novo entra). Cada barra é a quantidade de avaliações daquele dia (não acumula; o acúmulo do mês aparece na meta acima). Como o total só é conferido a cada verificação, dias entre duas verificações são estimados igualmente entre si.</p>';
   }
 
   function renderGoal(){
@@ -1150,6 +951,64 @@
     });
   }
 
+  // ---------------- static data (Central de Painéis export) ----------------
+  // This export has no live Claude artifact database behind it, so the
+  // state below is a frozen snapshot pulled from the live artifact's db
+  // at export time. Editing controls stay in the UI but nothing persists.
+  var STATIC_DATA = {
+    collaborators: [],
+    mapsUrl: "",
+    monthlyGoal: 20,
+    monthlyBonusValue: 0,
+    ratingGoal: 4.7,
+    weeks: [
+      {"id":"2026-06-08","weekStart":"2026-06-08","weekEnd":"2026-06-14","totalReviews":317,"avgRating":5,"loggedBy":"automação (Google Maps)","loggedAt":"2026-09-11T16:57:38.694753Z"},
+      {"id":"2026-06-15","weekStart":"2026-06-15","weekEnd":"2026-06-21","totalReviews":319,"avgRating":4,"loggedBy":"automação (Google Maps)","loggedAt":"2026-09-11T16:57:38.702125Z"},
+      {"id":"2026-06-22","weekStart":"2026-06-22","weekEnd":"2026-06-28","totalReviews":320,"avgRating":5,"loggedBy":"automação (Google Maps)","loggedAt":"2026-09-11T16:57:38.710278Z"},
+      {"id":"2026-06-29","weekStart":"2026-06-29","weekEnd":"2026-07-05","totalReviews":320,"avgRating":null,"loggedBy":"automação (Google Maps)","loggedAt":"2026-09-11T16:57:38.717212Z"},
+      {"id":"2026-07-06","weekStart":"2026-07-06","weekEnd":"2026-07-12","totalReviews":321,"avgRating":1,"loggedBy":"automação (Google Maps)","loggedAt":"2026-09-11T16:57:38.72437Z"},
+      {"id":"2026-07-13","weekStart":"2026-07-13","weekEnd":"2026-07-19","totalReviews":321,"avgRating":null,"loggedBy":"automação (Google Maps)","loggedAt":"2026-09-11T16:57:38.73251Z"},
+      {"id":"2026-07-20","weekStart":"2026-07-20","weekEnd":"2026-07-26","totalReviews":321,"avgRating":null,"loggedBy":"automação (Google Maps)","loggedAt":"2026-09-11T16:57:38.740736Z"},
+      {"id":"2026-07-27","weekStart":"2026-07-27","weekEnd":"2026-08-02","totalReviews":324,"avgRating":5,"loggedBy":"automação (Google Maps)","loggedAt":"2026-09-11T16:57:38.748737Z"},
+      {"id":"2026-08-03","weekStart":"2026-08-03","weekEnd":"2026-08-09","totalReviews":326,"avgRating":5,"loggedBy":"automação (Google Maps)","loggedAt":"2026-09-11T16:57:38.756272Z"},
+      {"id":"2026-08-10","weekStart":"2026-08-10","weekEnd":"2026-08-16","totalReviews":328,"avgRating":5,"loggedBy":"automação (Google Maps)","loggedAt":"2026-09-11T16:57:38.763504Z"},
+      {"id":"2026-08-17","weekStart":"2026-08-17","weekEnd":"2026-08-23","totalReviews":331,"avgRating":3.67,"loggedBy":"automação (Google Maps)","loggedAt":"2026-09-11T16:57:38.770962Z"},
+      {"id":"2026-08-24","weekStart":"2026-08-24","weekEnd":"2026-08-30","totalReviews":332,"avgRating":5,"loggedBy":"automação (Google Maps)","loggedAt":"2026-09-11T16:57:38.77834Z"},
+      {"id":"2026-08-31","weekStart":"2026-08-31","weekEnd":"2026-09-06","totalReviews":332,"avgRating":null,"loggedBy":"automação (Google Maps)","loggedAt":"2026-09-11T19:51:36.718684Z"},
+      {"id":"2026-09-07","weekStart":"2026-09-07","weekEnd":"2026-09-13","totalReviews":332,"avgRating":null,"loggedBy":"automação (Google Maps)","loggedAt":"2026-09-11T19:51:36.729436Z"},
+      {"id":"2026-09-14","weekStart":"2026-09-14","weekEnd":"2026-09-20","totalReviews":332,"avgRating":null,"loggedBy":"automação (Google Maps)","ratingBreakdown":{"1":0,"2":0,"3":0,"4":0,"5":0},"loggedAt":"2026-09-30T11:49:46.239384Z"},
+      {"id":"2026-09-21","weekStart":"2026-09-21","weekEnd":"2026-09-27","totalReviews":338,"avgRating":5,"loggedBy":"Claude (verificação manual)","ratingBreakdown":{"1":0,"2":0,"3":0,"4":0,"5":6},"loggedAt":"2026-09-23T00:00:00.000Z"},
+      {"id":"2026-09-28","weekStart":"2026-09-28","weekEnd":"2026-10-04","totalReviews":355,"avgRating":5,"loggedBy":"Claude (verificação manual)","ratingBreakdown":{"1":0,"2":0,"3":0,"4":0,"5":17},"loggedAt":"2026-10-01T20:59:12.000Z"},
+      {"id":"2026-10-05","weekStart":"2026-10-05","weekEnd":"2026-10-11","totalReviews":356,"avgRating":5,"loggedBy":"Claude (verificação manual)","ratingBreakdown":{"1":0,"2":0,"3":0,"4":0,"5":1},"loggedAt":"2026-10-09T00:00:00.000Z"}
+    ],
+    googleStats: {"dist":{"1":31,"2":4,"3":11,"4":8,"5":302},"rating":4.5,"totalReviews":356,"updatedAt":"2026-10-09T00:00:00.000Z"},
+    comments: [
+      {"id":"c1","name":"Dinda YouTube","rating":5,"weeksAgo":3,"text":"Comida sempre muito saborosa, chega quentinha o atendimento no 10000..!! Obrigada 🙏 vocês são de mais","ownerReply":"Obrigado Dinda!! Até a próxima!"},
+      {"id":"c2","name":"GabrielWinns","rating":5,"weeksAgo":0,"text":"Comida deliciosa gostinho de caseira, entrega rapida, chegou no tempo certo, pessoas educadas e respondem rápido, super recomendo 🙏❤️","ownerReply":"Obrigado gabriel! Seu Feedback é muito importante para nossa equipe"},
+      {"id":"c3","name":"Ezequiel Fagundes","rating":5,"weeksAgo":0,"text":"Comida top, entrega super rápido, chegou antes do tempo estimado, super recomendo 🏆","ownerReply":"Obrigado!!"}
+    ],
+    weeksUpdatedAt: "2026-10-09T00:00:00.000Z",
+    statsUpdatedAt: "2026-10-09T00:00:00.000Z",
+    goalUpdatedAt: "2026-09-30T11:31:10.747Z"
+  };
+
+  function loadStaticData(){
+    state.collaborators = STATIC_DATA.collaborators.slice();
+    state.mapsUrl = STATIC_DATA.mapsUrl;
+    state.monthlyGoal = STATIC_DATA.monthlyGoal;
+    state.monthlyBonusValue = STATIC_DATA.monthlyBonusValue;
+    state.ratingGoal = STATIC_DATA.ratingGoal;
+    state.weeks = STATIC_DATA.weeks.slice();
+    state.googleStats = STATIC_DATA.googleStats;
+    state.comments = STATIC_DATA.comments.slice();
+    state.extraRatedNoText = state.comments.length
+      ? "Além destes, mais 3 avaliações no último mês vieram só com nota (5★, 5★, 5★), sem comentário escrito."
+      : "";
+    state.weeksUpdatedAt = STATIC_DATA.weeksUpdatedAt;
+    state.statsUpdatedAt = STATIC_DATA.statsUpdatedAt;
+    state.goalUpdatedAt = STATIC_DATA.goalUpdatedAt;
+  }
+
   function init(){
     document.getElementById("addCollabBtn").onclick = function(){
       state.collaborators.push({id: uid(), name:""});
@@ -1171,97 +1030,8 @@
     tabPainelBtn.onclick = function(){ showTab("painel"); };
     tabComentariosBtn.onclick = function(){ showTab("comentarios"); };
 
-    // aplica os dados estáticos deste site antes da primeira renderização
-    state.weeks = STATIC_DATA.weeks.slice();
-    state.googleStats = STATIC_DATA.stats;
-    state.monthlyGoal = STATIC_DATA.goal.monthlyGoal;
-    state.monthlyBonusValue = STATIC_DATA.goal.monthlyBonusValue;
-    state.ratingGoal = STATIC_DATA.goal.ratingGoal;
-    state.goalUpdatedAt = STATIC_DATA.goal.updatedAt;
-    state.statsUpdatedAt = STATIC_DATA.stats.updatedAt;
-    var loggedAts = state.weeks.map(function(w){ return w.loggedAt; }).filter(Boolean);
-    state.weeksUpdatedAt = loggedAts.length ? loggedAts.reduce(function(a,b){ return (new Date(a) > new Date(b)) ? a : b; }) : null;
-    state.collaborators = (STATIC_DATA.settings.collaborators || []).slice();
-    state.mapsUrl = STATIC_DATA.settings.mapsUrl || "";
-    state.comments = STATIC_DATA.comments.slice();
-    state.extraRatedNoText = state.comments.length ? "Além destes, outras avaliações do período vieram só com nota, sem comentário escrito." : "";
-
+    loadStaticData();
     renderAll();
-
-    if (window.claude && window.claude.use){
-      window.claude.use("db").then(function(d){
-        db = d;
-        if (!db) return; // no viewer db this session — page still works locally
-        configRef = db.doc("config/settings");
-        weeksCol = db.collection("weeks");
-
-        configRef.onSnapshot(function(snap){
-          if (snap.exists){
-            var data = snap.data() || {};
-            if (Array.isArray(data.collaborators)) state.collaborators = data.collaborators;
-            state.mapsUrl = data.mapsUrl || "";
-          }
-          renderAll();
-        }, function(){ /* degrade silently */ });
-
-        weeksCol.orderBy("weekStart","asc").limit(500).onSnapshot(function(qs){
-          state.weeks = qs.docs.map(function(d){
-            var data = d.data() || {};
-            return {
-              id: d.id,
-              weekStart: data.weekStart,
-              weekEnd: data.weekEnd,
-              totalReviews: Number(data.totalReviews||0),
-              avgRating: (data.avgRating===undefined||data.avgRating===null) ? null : Number(data.avgRating),
-              ratingBreakdown: data.ratingBreakdown || null,
-              loggedBy: data.loggedBy || "",
-              loggedAt: data.loggedAt || null
-            };
-          });
-          var loggedAts = state.weeks.map(function(w){ return w.loggedAt; }).filter(Boolean);
-          state.weeksUpdatedAt = loggedAts.length ? loggedAts.reduce(function(a,b){ return (new Date(a) > new Date(b)) ? a : b; }) : null;
-          renderAll();
-        }, function(){ /* degrade silently */ });
-
-        goalRef = db.doc("config/goal");
-        goalRef.onSnapshot(function(snap){
-          if (snap.exists){
-            var gdata = snap.data() || {};
-            state.monthlyGoal = (gdata.monthlyGoal===undefined||gdata.monthlyGoal===null) ? 20 : Number(gdata.monthlyGoal);
-            state.monthlyBonusValue = (gdata.monthlyBonusValue===undefined||gdata.monthlyBonusValue===null) ? 0 : Number(gdata.monthlyBonusValue);
-            state.ratingGoal = (gdata.ratingGoal===undefined||gdata.ratingGoal===null) ? 4.7 : Number(gdata.ratingGoal);
-            state.goalUpdatedAt = gdata.updatedAt || null;
-          }
-          renderGoal();
-          renderGoalChart();
-          renderStats();
-          renderLastUpdated();
-        }, function(){ /* degrade silently */ });
-
-        statsRef = db.doc("stats/google");
-        statsRef.onSnapshot(function(snap){
-          state.googleStats = snap.exists ? (snap.data() || null) : null;
-          state.statsUpdatedAt = (state.googleStats && state.googleStats.updatedAt) || null;
-          renderAll();
-        }, function(){ /* degrade silently */ });
-
-        commentsCol = db.collection("comments");
-        commentsCol.onSnapshot(function(qs){
-          state.comments = qs.docs.map(function(d){
-            var data = d.data() || {};
-            return {
-              id: d.id, name: data.name || "", rating: Number(data.rating||0),
-              weeksAgo: Number(data.weeksAgo||0), text: data.text || "",
-              ownerReply: data.ownerReply || ""
-            };
-          });
-          state.extraRatedNoText = state.comments.length
-            ? "Além destes, mais 3 avaliações no último mês vieram só com nota (5★, 5★, 5★), sem comentário escrito."
-            : "";
-          renderAll();
-        }, function(){ /* degrade silently */ });
-      }).catch(function(){});
-    }
   }
 
   if (document.readyState === "loading"){
@@ -1271,5 +1041,3 @@
   }
 })();
 </script>
-</body>
-</html>
