@@ -316,6 +316,21 @@
       </div>
     </div>
   </div>
+
+  <div class="card">
+    <h2>Avaliações individuais verificadas</h2>
+    <p class="hint">Cada avaliação específica já conferida manualmente no Google (nome, nota e comentário) — serve para apontar exatamente qual avaliação sumiu, caso o total caia de novo.</p>
+    <div class="table-wrap">
+      <table id="reviewsTable">
+        <thead>
+          <tr><th>Cliente</th><th>Nota</th><th>Comentário</th><th>Visto desde</th><th>Status</th></tr>
+        </thead>
+        <tbody id="reviewsBody">
+          <tr class="empty-row"><td colspan="5">Nenhuma avaliação individual registrada ainda.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
   </div>
 
   <div id="viewComments" hidden>
@@ -386,22 +401,363 @@
   var DEFAULT_COLLABS = [];
 
   var state = {
-    collaborators: DEFAULT_COLLABS.slice(),
-    mapsUrl: "",
-    monthlyGoal: 20,
-    monthlyBonusValue: 0,
-    ratingGoal: 4.7,
-    weeks: [],       // {id, weekStart, weekEnd, totalReviews, avgRating, loggedBy}
-    googleStats: null, // {rating, totalReviews, dist, updatedAt}
-    comments: [],    // {id, name, rating, weeksAgo, text, ownerReply}
-    extraRatedNoText: "",
-    weeksUpdatedAt: null,
-    statsUpdatedAt: null,
-    goalUpdatedAt: null
-  };
+  "collaborators": [],
+  "mapsUrl": "",
+  "monthlyGoal": 20,
+  "monthlyBonusValue": 0,
+  "ratingGoal": 4.7,
+  "weeks": [
+    {
+      "id": "2026-06-08",
+      "weekStart": "2026-06-08",
+      "weekEnd": "2026-06-14",
+      "totalReviews": 317,
+      "avgRating": 5,
+      "ratingBreakdown": null,
+      "loggedBy": "automação (Google Maps)",
+      "loggedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "2026-06-15",
+      "weekStart": "2026-06-15",
+      "weekEnd": "2026-06-21",
+      "totalReviews": 319,
+      "avgRating": 4,
+      "ratingBreakdown": null,
+      "loggedBy": "automação (Google Maps)",
+      "loggedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "2026-06-22",
+      "weekStart": "2026-06-22",
+      "weekEnd": "2026-06-28",
+      "totalReviews": 320,
+      "avgRating": 5,
+      "ratingBreakdown": null,
+      "loggedBy": "automação (Google Maps)",
+      "loggedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "2026-06-29",
+      "weekStart": "2026-06-29",
+      "weekEnd": "2026-07-05",
+      "totalReviews": 320,
+      "avgRating": null,
+      "ratingBreakdown": null,
+      "loggedBy": "automação (Google Maps)",
+      "loggedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "2026-07-06",
+      "weekStart": "2026-07-06",
+      "weekEnd": "2026-07-12",
+      "totalReviews": 321,
+      "avgRating": 1,
+      "ratingBreakdown": null,
+      "loggedBy": "automação (Google Maps)",
+      "loggedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "2026-07-13",
+      "weekStart": "2026-07-13",
+      "weekEnd": "2026-07-19",
+      "totalReviews": 321,
+      "avgRating": null,
+      "ratingBreakdown": null,
+      "loggedBy": "automação (Google Maps)",
+      "loggedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "2026-07-20",
+      "weekStart": "2026-07-20",
+      "weekEnd": "2026-07-26",
+      "totalReviews": 321,
+      "avgRating": null,
+      "ratingBreakdown": null,
+      "loggedBy": "automação (Google Maps)",
+      "loggedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "2026-07-27",
+      "weekStart": "2026-07-27",
+      "weekEnd": "2026-08-02",
+      "totalReviews": 324,
+      "avgRating": 5,
+      "ratingBreakdown": null,
+      "loggedBy": "automação (Google Maps)",
+      "loggedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "2026-08-03",
+      "weekStart": "2026-08-03",
+      "weekEnd": "2026-08-09",
+      "totalReviews": 326,
+      "avgRating": 5,
+      "ratingBreakdown": null,
+      "loggedBy": "automação (Google Maps)",
+      "loggedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "2026-08-10",
+      "weekStart": "2026-08-10",
+      "weekEnd": "2026-08-16",
+      "totalReviews": 328,
+      "avgRating": 5,
+      "ratingBreakdown": null,
+      "loggedBy": "automação (Google Maps)",
+      "loggedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "2026-08-17",
+      "weekStart": "2026-08-17",
+      "weekEnd": "2026-08-23",
+      "totalReviews": 331,
+      "avgRating": 3.67,
+      "ratingBreakdown": null,
+      "loggedBy": "automação (Google Maps)",
+      "loggedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "2026-08-24",
+      "weekStart": "2026-08-24",
+      "weekEnd": "2026-08-30",
+      "totalReviews": 332,
+      "avgRating": 5,
+      "ratingBreakdown": null,
+      "loggedBy": "automação (Google Maps)",
+      "loggedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "2026-08-31",
+      "weekStart": "2026-08-31",
+      "weekEnd": "2026-09-06",
+      "totalReviews": 332,
+      "avgRating": null,
+      "ratingBreakdown": null,
+      "loggedBy": "automação (Google Maps)",
+      "loggedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "2026-09-07",
+      "weekStart": "2026-09-07",
+      "weekEnd": "2026-09-13",
+      "totalReviews": 332,
+      "avgRating": null,
+      "ratingBreakdown": null,
+      "loggedBy": "automação (Google Maps)",
+      "loggedAt": "2026-09-11T00:00:00.000Z"
+    },
+    {
+      "id": "2026-09-14",
+      "weekStart": "2026-09-14",
+      "weekEnd": "2026-09-20",
+      "totalReviews": 332,
+      "avgRating": null,
+      "ratingBreakdown": {
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+        "5": 0
+      },
+      "loggedBy": "automação (Google Maps)",
+      "loggedAt": "2026-09-20T00:00:00.000Z"
+    },
+    {
+      "id": "2026-09-21",
+      "weekStart": "2026-09-21",
+      "weekEnd": "2026-09-27",
+      "totalReviews": 338,
+      "avgRating": 5,
+      "ratingBreakdown": {
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+        "5": 6
+      },
+      "loggedBy": "Claude (verificação manual)",
+      "loggedAt": "2026-09-23T00:00:00.000Z"
+    },
+    {
+      "id": "2026-09-28",
+      "weekStart": "2026-09-28",
+      "weekEnd": "2026-10-04",
+      "totalReviews": 355,
+      "avgRating": 5,
+      "ratingBreakdown": {
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+        "5": 17
+      },
+      "loggedBy": "Claude (verificação manual)",
+      "loggedAt": "2026-10-01T20:59:12.000Z"
+    },
+    {
+      "id": "2026-10-05",
+      "weekStart": "2026-10-05",
+      "weekEnd": "2026-10-11",
+      "totalReviews": 356,
+      "avgRating": 5,
+      "ratingBreakdown": {
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+        "5": 1
+      },
+      "loggedBy": "Claude (verificação manual)",
+      "loggedAt": "2026-10-09T00:00:00.000Z"
+    },
+    {
+      "id": "2026-10-12",
+      "weekStart": "2026-10-12",
+      "weekEnd": "2026-10-18",
+      "totalReviews": 358,
+      "avgRating": 5,
+      "ratingBreakdown": {
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+        "5": 2
+      },
+      "loggedBy": "Claude (verificação manual)",
+      "loggedAt": "2026-10-20T00:00:00.000Z"
+    },
+    {
+      "id": "2026-10-19",
+      "weekStart": "2026-10-19",
+      "weekEnd": "2026-10-25",
+      "totalReviews": 356,
+      "avgRating": null,
+      "ratingBreakdown": {
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+        "5": 0
+      },
+      "loggedBy": "Claude (verificação manual)",
+      "loggedAt": "2026-10-26T00:00:00.000Z"
+    },
+    {
+      "id": "2026-10-26",
+      "weekStart": "2026-10-26",
+      "weekEnd": "2026-11-01",
+      "totalReviews": 352,
+      "avgRating": null,
+      "ratingBreakdown": {
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+        "5": 0
+      },
+      "loggedBy": "Claude (verificação manual)",
+      "loggedAt": "2026-11-03T00:00:00.000Z"
+    }
+  ],
+  "googleStats": {
+    "dist": {
+      "1": 31,
+      "2": 4,
+      "3": 11,
+      "4": 8,
+      "5": 298
+    },
+    "rating": 4.5,
+    "totalReviews": 352,
+    "updatedAt": "2026-11-03T00:00:00.000Z"
+  },
+  "comments": [
+    {
+      "id": "c1",
+      "name": "Dinda YouTube",
+      "ownerReply": "Obrigado Dinda!! Até a próxima!",
+      "rating": 5,
+      "text": "Comida sempre muito saborosa, chega quentinha o atendimento no 10000..!! Obrigada 🙏 vocês são de mais",
+      "weeksAgo": 3
+    },
+    {
+      "id": "c2",
+      "name": "GabrielWinns",
+      "ownerReply": "Obrigado gabriel! Seu Feedback é muito importante para nossa equipe",
+      "rating": 5,
+      "text": "Comida deliciosa gostinho de caseira, entrega rapida, chegou no tempo certo, pessoas educadas e respondem rápido, super recomendo 🙏❤️",
+      "weeksAgo": 0
+    },
+    {
+      "id": "c3",
+      "name": "Ezequiel Fagundes",
+      "ownerReply": "Obrigado!!",
+      "rating": 5,
+      "text": "Comida top, entrega super rápido, chegou antes do tempo estimado, super recomendo 🏆",
+      "weeksAgo": 0
+    }
+  ],
+  "extraRatedNoText": "Além destes, mais 3 avaliações no último mês vieram só com nota (5★, 5★, 5★), sem comentário escrito.",
+  "reviews": [
+    {
+      "id": "jonas-hoesel",
+      "author": "Jonas Hoesel",
+      "dateText": "Há 1 semana (em 20/10)",
+      "firstSeenAt": "2026-10-20T00:00:00.000Z",
+      "lastSeenAt": "2026-11-03T00:00:00.000Z",
+      "rating": 5,
+      "status": "active",
+      "text": "Comida muito bem temperada, e muito bem embalada!! Indico com certeza!! Parabéns"
+    },
+    {
+      "id": "laura-antiqueira-vicente",
+      "author": "Laura Antiqueira Vicente",
+      "dateText": "Há 4 dias (em 09/10)",
+      "firstSeenAt": "2026-10-09T00:00:00.000Z",
+      "lastSeenAt": "2026-11-03T00:00:00.000Z",
+      "rating": 5,
+      "status": "active",
+      "text": "(sem comentário escrito — só fotos)"
+    },
+    {
+      "id": "melissa-bastos",
+      "author": "Melissa Bastos",
+      "dateText": "Há 7 horas (em 26/10)",
+      "firstSeenAt": "2026-10-26T00:00:00.000Z",
+      "lastSeenAt": "2026-11-03T00:00:00.000Z",
+      "rating": 5,
+      "status": "active",
+      "text": "Quando penso em pedir uma comidinha sem erro, só vem Rango do Chef na cabeça. Bem feito e bem servido."
+    },
+    {
+      "id": "pablo-vargas",
+      "author": "Pablo Vargas",
+      "dateText": "Há 3 dias (em 20/10)",
+      "firstSeenAt": "2026-10-20T00:00:00.000Z",
+      "lastSeenAt": "2026-11-03T00:00:00.000Z",
+      "rating": 5,
+      "status": "active",
+      "text": "Comida EXCELENTE, e gosto ótimo. Cuidado e atenção com o pedido, jamais vistos!!! Recomendo"
+    },
+    {
+      "id": "tatiane-alcantara",
+      "author": "Tatiane Alcantara",
+      "dateText": "Ontem (em 09/10)",
+      "firstSeenAt": "2026-10-09T00:00:00.000Z",
+      "lastSeenAt": "2026-11-03T00:00:00.000Z",
+      "rating": 5,
+      "status": "active",
+      "text": "Ótimo atendimento! Comida deliciosa! Sempre peço pelo IFood e sou muito bem atendida! A atendente Pamela muito atenciosa!!! Super indico 💗"
+    }
+  ],
+  "weeksUpdatedAt": "2026-11-03T00:00:00.000Z",
+  "statsUpdatedAt": "2026-11-03T00:00:00.000Z",
+  "goalUpdatedAt": "2026-09-30T11:31:10.747Z"
+};
 
   var db = null;
-  var configRef = null, weeksCol = null, statsRef = null, commentsCol = null, goalRef = null;
+  var configRef = null, weeksCol = null, statsRef = null, commentsCol = null, goalRef = null, reviewsCol = null;
 
   // ---------------- rendering ----------------
 
@@ -918,6 +1274,37 @@
     el.textContent = f ? ("Última atualização: " + f) : "";
   }
 
+  function renderReviewsList(){
+    var body = document.getElementById("reviewsBody");
+    if (!body) return;
+    if (!state.reviews.length){
+      body.innerHTML = '<tr class="empty-row"><td colspan="5">Nenhuma avaliação individual registrada ainda.</td></tr>';
+      return;
+    }
+    var list = state.reviews.slice().sort(function(a,b){
+      var av = a.lastSeenAt || a.firstSeenAt || "";
+      var bv = b.lastSeenAt || b.firstSeenAt || "";
+      return av < bv ? 1 : (av > bv ? -1 : 0);
+    });
+    body.innerHTML = list.map(function(r){
+      var firstSeen = fmtDateTime(r.firstSeenAt);
+      var removed = r.status === "removed";
+      var pillClass = removed ? "warn" : "good";
+      var pillText = removed
+        ? ("sumiu" + (r.removedNoticedAt ? (" — notado em " + (fmtDateTime(r.removedNoticedAt)||"")) : ""))
+        : "ativa";
+      var textFull = esc(r.text || "");
+      var textShort = esc((r.text||"").length > 70 ? (r.text.slice(0,70) + "…") : (r.text||""));
+      return '<tr>'+
+        '<td style="white-space:normal; min-width:120px;">'+esc(r.author||"—")+'</td>'+
+        '<td><span class="stars" aria-label="'+esc(r.rating)+' de 5 estrelas">'+starsHtml(r.rating)+'</span></td>'+
+        '<td style="white-space:normal; max-width:320px;" title="'+textFull+'">'+textShort+'</td>'+
+        '<td>'+(firstSeen || "—")+'</td>'+
+        '<td><span class="pill '+pillClass+'">'+esc(pillText)+'</span></td>'+
+        '</tr>';
+    }).join("");
+  }
+
   function renderAll(){
     renderLastUpdated();
     renderMapsForm();
@@ -928,6 +1315,7 @@
     renderHistory();
     renderCollabs();
     renderComments();
+    renderReviewsList();
   }
 
   // ---------------- persistence ----------------
@@ -951,66 +1339,6 @@
     });
   }
 
-  // ---------------- static data (Central de Painéis export) ----------------
-  // This export has no live Claude artifact database behind it, so the
-  // state below is a frozen snapshot pulled from the live artifact's db
-  // at export time. Editing controls stay in the UI but nothing persists.
-  var STATIC_DATA = {
-    collaborators: [],
-    mapsUrl: "",
-    monthlyGoal: 20,
-    monthlyBonusValue: 0,
-    ratingGoal: 4.7,
-    weeks: [
-      {"id":"2026-06-08","weekStart":"2026-06-08","weekEnd":"2026-06-14","totalReviews":317,"avgRating":5,"loggedBy":"automação (Google Maps)","loggedAt":"2026-09-11T16:57:38.694753Z"},
-      {"id":"2026-06-15","weekStart":"2026-06-15","weekEnd":"2026-06-21","totalReviews":319,"avgRating":4,"loggedBy":"automação (Google Maps)","loggedAt":"2026-09-11T16:57:38.702125Z"},
-      {"id":"2026-06-22","weekStart":"2026-06-22","weekEnd":"2026-06-28","totalReviews":320,"avgRating":5,"loggedBy":"automação (Google Maps)","loggedAt":"2026-09-11T16:57:38.710278Z"},
-      {"id":"2026-06-29","weekStart":"2026-06-29","weekEnd":"2026-07-05","totalReviews":320,"avgRating":null,"loggedBy":"automação (Google Maps)","loggedAt":"2026-09-11T16:57:38.717212Z"},
-      {"id":"2026-07-06","weekStart":"2026-07-06","weekEnd":"2026-07-12","totalReviews":321,"avgRating":1,"loggedBy":"automação (Google Maps)","loggedAt":"2026-09-11T16:57:38.72437Z"},
-      {"id":"2026-07-13","weekStart":"2026-07-13","weekEnd":"2026-07-19","totalReviews":321,"avgRating":null,"loggedBy":"automação (Google Maps)","loggedAt":"2026-09-11T16:57:38.73251Z"},
-      {"id":"2026-07-20","weekStart":"2026-07-20","weekEnd":"2026-07-26","totalReviews":321,"avgRating":null,"loggedBy":"automação (Google Maps)","loggedAt":"2026-09-11T16:57:38.740736Z"},
-      {"id":"2026-07-27","weekStart":"2026-07-27","weekEnd":"2026-08-02","totalReviews":324,"avgRating":5,"loggedBy":"automação (Google Maps)","loggedAt":"2026-09-11T16:57:38.748737Z"},
-      {"id":"2026-08-03","weekStart":"2026-08-03","weekEnd":"2026-08-09","totalReviews":326,"avgRating":5,"loggedBy":"automação (Google Maps)","loggedAt":"2026-09-11T16:57:38.756272Z"},
-      {"id":"2026-08-10","weekStart":"2026-08-10","weekEnd":"2026-08-16","totalReviews":328,"avgRating":5,"loggedBy":"automação (Google Maps)","loggedAt":"2026-09-11T16:57:38.763504Z"},
-      {"id":"2026-08-17","weekStart":"2026-08-17","weekEnd":"2026-08-23","totalReviews":331,"avgRating":3.67,"loggedBy":"automação (Google Maps)","loggedAt":"2026-09-11T16:57:38.770962Z"},
-      {"id":"2026-08-24","weekStart":"2026-08-24","weekEnd":"2026-08-30","totalReviews":332,"avgRating":5,"loggedBy":"automação (Google Maps)","loggedAt":"2026-09-11T16:57:38.77834Z"},
-      {"id":"2026-08-31","weekStart":"2026-08-31","weekEnd":"2026-09-06","totalReviews":332,"avgRating":null,"loggedBy":"automação (Google Maps)","loggedAt":"2026-09-11T19:51:36.718684Z"},
-      {"id":"2026-09-07","weekStart":"2026-09-07","weekEnd":"2026-09-13","totalReviews":332,"avgRating":null,"loggedBy":"automação (Google Maps)","loggedAt":"2026-09-11T19:51:36.729436Z"},
-      {"id":"2026-09-14","weekStart":"2026-09-14","weekEnd":"2026-09-20","totalReviews":332,"avgRating":null,"loggedBy":"automação (Google Maps)","ratingBreakdown":{"1":0,"2":0,"3":0,"4":0,"5":0},"loggedAt":"2026-09-30T11:49:46.239384Z"},
-      {"id":"2026-09-21","weekStart":"2026-09-21","weekEnd":"2026-09-27","totalReviews":338,"avgRating":5,"loggedBy":"Claude (verificação manual)","ratingBreakdown":{"1":0,"2":0,"3":0,"4":0,"5":6},"loggedAt":"2026-09-23T00:00:00.000Z"},
-      {"id":"2026-09-28","weekStart":"2026-09-28","weekEnd":"2026-10-04","totalReviews":355,"avgRating":5,"loggedBy":"Claude (verificação manual)","ratingBreakdown":{"1":0,"2":0,"3":0,"4":0,"5":17},"loggedAt":"2026-10-01T20:59:12.000Z"},
-      {"id":"2026-10-05","weekStart":"2026-10-05","weekEnd":"2026-10-11","totalReviews":356,"avgRating":5,"loggedBy":"Claude (verificação manual)","ratingBreakdown":{"1":0,"2":0,"3":0,"4":0,"5":1},"loggedAt":"2026-10-09T00:00:00.000Z"},
-      {"id":"2026-10-12","weekStart":"2026-10-12","weekEnd":"2026-10-18","totalReviews":358,"avgRating":5,"loggedBy":"Claude (verificação manual)","ratingBreakdown":{"1":0,"2":0,"3":0,"4":0,"5":2},"loggedAt":"2026-10-20T00:00:00.000Z"},
-      {"id":"2026-10-19","weekStart":"2026-10-19","weekEnd":"2026-10-25","totalReviews":356,"avgRating":null,"loggedBy":"Claude (verificação manual)","ratingBreakdown":{"1":0,"2":0,"3":0,"4":0,"5":0},"loggedAt":"2026-10-26T00:00:00.000Z"}
-    ],
-    googleStats: {"dist":{"1":31,"2":4,"3":11,"4":8,"5":302},"rating":4.5,"totalReviews":356,"updatedAt":"2026-10-26T00:00:00.000Z"},
-    comments: [
-      {"id":"c1","name":"Dinda YouTube","rating":5,"weeksAgo":3,"text":"Comida sempre muito saborosa, chega quentinha o atendimento no 10000..!! Obrigada 🙏 vocês são de mais","ownerReply":"Obrigado Dinda!! Até a próxima!"},
-      {"id":"c2","name":"GabrielWinns","rating":5,"weeksAgo":0,"text":"Comida deliciosa gostinho de caseira, entrega rapida, chegou no tempo certo, pessoas educadas e respondem rápido, super recomendo 🙏❤️","ownerReply":"Obrigado gabriel! Seu Feedback é muito importante para nossa equipe"},
-      {"id":"c3","name":"Ezequiel Fagundes","rating":5,"weeksAgo":0,"text":"Comida top, entrega super rápido, chegou antes do tempo estimado, super recomendo 🏆","ownerReply":"Obrigado!!"}
-    ],
-    weeksUpdatedAt: "2026-10-26T00:00:00.000Z",
-    statsUpdatedAt: "2026-10-26T00:00:00.000Z",
-    goalUpdatedAt: "2026-09-30T11:31:10.747Z"
-  };
-
-  function loadStaticData(){
-    state.collaborators = STATIC_DATA.collaborators.slice();
-    state.mapsUrl = STATIC_DATA.mapsUrl;
-    state.monthlyGoal = STATIC_DATA.monthlyGoal;
-    state.monthlyBonusValue = STATIC_DATA.monthlyBonusValue;
-    state.ratingGoal = STATIC_DATA.ratingGoal;
-    state.weeks = STATIC_DATA.weeks.slice();
-    state.googleStats = STATIC_DATA.googleStats;
-    state.comments = STATIC_DATA.comments.slice();
-    state.extraRatedNoText = state.comments.length
-      ? "Além destes, mais 3 avaliações no último mês vieram só com nota (5★, 5★, 5★), sem comentário escrito."
-      : "";
-    state.weeksUpdatedAt = STATIC_DATA.weeksUpdatedAt;
-    state.statsUpdatedAt = STATIC_DATA.statsUpdatedAt;
-    state.goalUpdatedAt = STATIC_DATA.goalUpdatedAt;
-  }
-
   function init(){
     document.getElementById("addCollabBtn").onclick = function(){
       state.collaborators.push({id: uid(), name:""});
@@ -1032,8 +1360,101 @@
     tabPainelBtn.onclick = function(){ showTab("painel"); };
     tabComentariosBtn.onclick = function(){ showTab("comentarios"); };
 
-    loadStaticData();
     renderAll();
+
+    if (window.claude && window.claude.use){
+      window.claude.use("db").then(function(d){
+        db = d;
+        if (!db) return; // no viewer db this session — page still works locally
+        configRef = db.doc("config/settings");
+        weeksCol = db.collection("weeks");
+
+        configRef.onSnapshot(function(snap){
+          if (snap.exists){
+            var data = snap.data() || {};
+            if (Array.isArray(data.collaborators)) state.collaborators = data.collaborators;
+            state.mapsUrl = data.mapsUrl || "";
+          }
+          renderAll();
+        }, function(){ /* degrade silently */ });
+
+        weeksCol.orderBy("weekStart","asc").limit(500).onSnapshot(function(qs){
+          state.weeks = qs.docs.map(function(d){
+            var data = d.data() || {};
+            return {
+              id: d.id,
+              weekStart: data.weekStart,
+              weekEnd: data.weekEnd,
+              totalReviews: Number(data.totalReviews||0),
+              avgRating: (data.avgRating===undefined||data.avgRating===null) ? null : Number(data.avgRating),
+              ratingBreakdown: data.ratingBreakdown || null,
+              loggedBy: data.loggedBy || "",
+              loggedAt: data.loggedAt || null
+            };
+          });
+          var loggedAts = state.weeks.map(function(w){ return w.loggedAt; }).filter(Boolean);
+          state.weeksUpdatedAt = loggedAts.length ? loggedAts.reduce(function(a,b){ return (new Date(a) > new Date(b)) ? a : b; }) : null;
+          renderAll();
+        }, function(){ /* degrade silently */ });
+
+        goalRef = db.doc("config/goal");
+        goalRef.onSnapshot(function(snap){
+          if (snap.exists){
+            var gdata = snap.data() || {};
+            state.monthlyGoal = (gdata.monthlyGoal===undefined||gdata.monthlyGoal===null) ? 20 : Number(gdata.monthlyGoal);
+            state.monthlyBonusValue = (gdata.monthlyBonusValue===undefined||gdata.monthlyBonusValue===null) ? 0 : Number(gdata.monthlyBonusValue);
+            state.ratingGoal = (gdata.ratingGoal===undefined||gdata.ratingGoal===null) ? 4.7 : Number(gdata.ratingGoal);
+            state.goalUpdatedAt = gdata.updatedAt || null;
+          }
+          renderGoal();
+          renderGoalChart();
+          renderStats();
+          renderLastUpdated();
+        }, function(){ /* degrade silently */ });
+
+        statsRef = db.doc("stats/google");
+        statsRef.onSnapshot(function(snap){
+          state.googleStats = snap.exists ? (snap.data() || null) : null;
+          state.statsUpdatedAt = (state.googleStats && state.googleStats.updatedAt) || null;
+          renderAll();
+        }, function(){ /* degrade silently */ });
+
+        commentsCol = db.collection("comments");
+        commentsCol.onSnapshot(function(qs){
+          state.comments = qs.docs.map(function(d){
+            var data = d.data() || {};
+            return {
+              id: d.id, name: data.name || "", rating: Number(data.rating||0),
+              weeksAgo: Number(data.weeksAgo||0), text: data.text || "",
+              ownerReply: data.ownerReply || ""
+            };
+          });
+          state.extraRatedNoText = state.comments.length
+            ? "Além destes, mais 3 avaliações no último mês vieram só com nota (5★, 5★, 5★), sem comentário escrito."
+            : "";
+          renderAll();
+        }, function(){ /* degrade silently */ });
+
+        reviewsCol = db.collection("reviews");
+        reviewsCol.onSnapshot(function(qs){
+          state.reviews = qs.docs.map(function(d){
+            var data = d.data() || {};
+            return {
+              id: d.id,
+              author: data.author || "",
+              rating: Number(data.rating||0),
+              text: data.text || "",
+              dateText: data.dateText || "",
+              firstSeenAt: data.firstSeenAt || null,
+              lastSeenAt: data.lastSeenAt || null,
+              status: data.status || "active",
+              removedNoticedAt: data.removedNoticedAt || null
+            };
+          });
+          renderReviewsList();
+        }, function(){ /* degrade silently */ });
+      }).catch(function(){});
+    }
   }
 
   if (document.readyState === "loading"){
