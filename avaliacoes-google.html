@@ -218,7 +218,7 @@
     <span class="eyebrow" id="restName">Rango do Chef</span>
     <h1>Bônus por avaliações no Google</h1>
     <p class="sub">Contagem semanal de avaliações do Perfil da Empresa no Google, usada para calcular a bonificação do time de caixa.</p>
-    <p class="muted-small" style="margin:6px 0 0;"><span class="version-pill">v1.7</span><span id="lastUpdated">—</span></p>
+    <p class="muted-small" style="margin:6px 0 0;"><span class="version-pill">v1.8</span><span id="lastUpdated">—</span></p>
   </header>
 
   <div class="tabbar">
@@ -279,6 +279,22 @@
       <span id="goalEditHost"></span>
     </div>
     <div class="chart-wrap" id="goalChartHost" style="margin-top:2px;"></div>
+  </div>
+
+  <div class="callout" id="bonusFiveStarCallout" style="flex-direction:column; align-items:stretch; border-color:var(--gold);">
+    <div style="display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px;">
+      <span><strong style="color:var(--gold);">Bônus do caixa — só 5★ novas:</strong> <span id="fiveStarProgressText">—</span></span>
+    </div>
+    <p class="muted-small" style="margin:2px 0 0;">Conta só avaliações <strong>5 estrelas</strong> que entraram no mês — é o número pra decidir o bônus. Ao contrário da "Meta do mês" acima (que é o líquido, com entradas e saídas), esse número nunca cai: se uma 5★ já contada for removida do Google depois, ela continua valendo pro bônus daquele mês.</p>
+    <div class="chart-wrap" id="fiveStarChartHost" style="margin-top:6px;"></div>
+    <div class="table-wrap" style="margin-top:10px;">
+      <table id="fiveStarHistoryTable">
+        <thead><tr><th>Mês</th><th>5★ novas (bônus)</th></tr></thead>
+        <tbody id="fiveStarHistoryBody">
+          <tr class="empty-row"><td colspan="2">Nenhum dado ainda.</td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <div class="callout" id="mapsCallout">
@@ -401,430 +417,457 @@
   var DEFAULT_COLLABS = [];
 
   var state = {
-  "collaborators": [],
-  "mapsUrl": "",
-  "monthlyGoal": 20,
-  "monthlyBonusValue": 0,
-  "ratingGoal": 4.7,
-  "weeks": [
-    {
-      "id": "2026-06-08",
-      "weekStart": "2026-06-08",
-      "weekEnd": "2026-06-14",
-      "totalReviews": 317,
-      "avgRating": 5,
-      "ratingBreakdown": null,
-      "loggedBy": "automação (Google Maps)",
-      "loggedAt": "2026-09-11T00:00:00.000Z"
-    },
-    {
-      "id": "2026-06-15",
-      "weekStart": "2026-06-15",
-      "weekEnd": "2026-06-21",
-      "totalReviews": 319,
-      "avgRating": 4,
-      "ratingBreakdown": null,
-      "loggedBy": "automação (Google Maps)",
-      "loggedAt": "2026-09-11T00:00:00.000Z"
-    },
-    {
-      "id": "2026-06-22",
-      "weekStart": "2026-06-22",
-      "weekEnd": "2026-06-28",
-      "totalReviews": 320,
-      "avgRating": 5,
-      "ratingBreakdown": null,
-      "loggedBy": "automação (Google Maps)",
-      "loggedAt": "2026-09-11T00:00:00.000Z"
-    },
-    {
-      "id": "2026-06-29",
-      "weekStart": "2026-06-29",
-      "weekEnd": "2026-07-05",
-      "totalReviews": 320,
-      "avgRating": null,
-      "ratingBreakdown": null,
-      "loggedBy": "automação (Google Maps)",
-      "loggedAt": "2026-09-11T00:00:00.000Z"
-    },
-    {
-      "id": "2026-07-06",
-      "weekStart": "2026-07-06",
-      "weekEnd": "2026-07-12",
-      "totalReviews": 321,
-      "avgRating": 1,
-      "ratingBreakdown": null,
-      "loggedBy": "automação (Google Maps)",
-      "loggedAt": "2026-09-11T00:00:00.000Z"
-    },
-    {
-      "id": "2026-07-13",
-      "weekStart": "2026-07-13",
-      "weekEnd": "2026-07-19",
-      "totalReviews": 321,
-      "avgRating": null,
-      "ratingBreakdown": null,
-      "loggedBy": "automação (Google Maps)",
-      "loggedAt": "2026-09-11T00:00:00.000Z"
-    },
-    {
-      "id": "2026-07-20",
-      "weekStart": "2026-07-20",
-      "weekEnd": "2026-07-26",
-      "totalReviews": 321,
-      "avgRating": null,
-      "ratingBreakdown": null,
-      "loggedBy": "automação (Google Maps)",
-      "loggedAt": "2026-09-11T00:00:00.000Z"
-    },
-    {
-      "id": "2026-07-27",
-      "weekStart": "2026-07-27",
-      "weekEnd": "2026-08-02",
-      "totalReviews": 324,
-      "avgRating": 5,
-      "ratingBreakdown": null,
-      "loggedBy": "automação (Google Maps)",
-      "loggedAt": "2026-09-11T00:00:00.000Z"
-    },
-    {
-      "id": "2026-08-03",
-      "weekStart": "2026-08-03",
-      "weekEnd": "2026-08-09",
-      "totalReviews": 326,
-      "avgRating": 5,
-      "ratingBreakdown": null,
-      "loggedBy": "automação (Google Maps)",
-      "loggedAt": "2026-09-11T00:00:00.000Z"
-    },
-    {
-      "id": "2026-08-10",
-      "weekStart": "2026-08-10",
-      "weekEnd": "2026-08-16",
-      "totalReviews": 328,
-      "avgRating": 5,
-      "ratingBreakdown": null,
-      "loggedBy": "automação (Google Maps)",
-      "loggedAt": "2026-09-11T00:00:00.000Z"
-    },
-    {
-      "id": "2026-08-17",
-      "weekStart": "2026-08-17",
-      "weekEnd": "2026-08-23",
-      "totalReviews": 331,
-      "avgRating": 3.67,
-      "ratingBreakdown": null,
-      "loggedBy": "automação (Google Maps)",
-      "loggedAt": "2026-09-11T00:00:00.000Z"
-    },
-    {
-      "id": "2026-08-24",
-      "weekStart": "2026-08-24",
-      "weekEnd": "2026-08-30",
-      "totalReviews": 332,
-      "avgRating": 5,
-      "ratingBreakdown": null,
-      "loggedBy": "automação (Google Maps)",
-      "loggedAt": "2026-09-11T00:00:00.000Z"
-    },
-    {
-      "id": "2026-08-31",
-      "weekStart": "2026-08-31",
-      "weekEnd": "2026-09-06",
-      "totalReviews": 332,
-      "avgRating": null,
-      "ratingBreakdown": null,
-      "loggedBy": "automação (Google Maps)",
-      "loggedAt": "2026-09-11T00:00:00.000Z"
-    },
-    {
-      "id": "2026-09-07",
-      "weekStart": "2026-09-07",
-      "weekEnd": "2026-09-13",
-      "totalReviews": 332,
-      "avgRating": null,
-      "ratingBreakdown": null,
-      "loggedBy": "automação (Google Maps)",
-      "loggedAt": "2026-09-11T00:00:00.000Z"
-    },
-    {
-      "id": "2026-09-14",
-      "weekStart": "2026-09-14",
-      "weekEnd": "2026-09-20",
-      "totalReviews": 332,
-      "avgRating": null,
-      "ratingBreakdown": {
-        "1": 0,
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0
+    collaborators: [],
+    mapsUrl: "",
+    monthlyGoal: 20,
+    monthlyBonusValue: 0,
+    ratingGoal: 4.7,
+    weeks: [
+      {
+        id: "2026-06-08",
+        weekStart: "2026-06-08",
+        weekEnd: "2026-06-14",
+        totalReviews: 317,
+        avgRating: 5,
+        ratingBreakdown: null,
+        loggedBy: "automação (Google Maps)",
+        loggedAt: "2026-09-11T00:00:00.000Z"
       },
-      "loggedBy": "automação (Google Maps)",
-      "loggedAt": "2026-09-20T00:00:00.000Z"
-    },
-    {
-      "id": "2026-09-21",
-      "weekStart": "2026-09-21",
-      "weekEnd": "2026-09-27",
-      "totalReviews": 338,
-      "avgRating": 5,
-      "ratingBreakdown": {
-        "1": 0,
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 6
+      {
+        id: "2026-06-15",
+        weekStart: "2026-06-15",
+        weekEnd: "2026-06-21",
+        totalReviews: 319,
+        avgRating: 4,
+        ratingBreakdown: null,
+        loggedBy: "automação (Google Maps)",
+        loggedAt: "2026-09-11T00:00:00.000Z"
       },
-      "loggedBy": "Claude (verificação manual)",
-      "loggedAt": "2026-09-23T00:00:00.000Z"
-    },
-    {
-      "id": "2026-09-28",
-      "weekStart": "2026-09-28",
-      "weekEnd": "2026-10-04",
-      "totalReviews": 355,
-      "avgRating": 5,
-      "ratingBreakdown": {
-        "1": 0,
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 17
+      {
+        id: "2026-06-22",
+        weekStart: "2026-06-22",
+        weekEnd: "2026-06-28",
+        totalReviews: 320,
+        avgRating: 5,
+        ratingBreakdown: null,
+        loggedBy: "automação (Google Maps)",
+        loggedAt: "2026-09-11T00:00:00.000Z"
       },
-      "loggedBy": "Claude (verificação manual)",
-      "loggedAt": "2026-10-01T20:59:12.000Z"
-    },
-    {
-      "id": "2026-10-05",
-      "weekStart": "2026-10-05",
-      "weekEnd": "2026-10-11",
-      "totalReviews": 356,
-      "avgRating": 5,
-      "ratingBreakdown": {
-        "1": 0,
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 1
+      {
+        id: "2026-06-29",
+        weekStart: "2026-06-29",
+        weekEnd: "2026-07-05",
+        totalReviews: 320,
+        avgRating: null,
+        ratingBreakdown: null,
+        loggedBy: "automação (Google Maps)",
+        loggedAt: "2026-09-11T00:00:00.000Z"
       },
-      "loggedBy": "Claude (verificação manual)",
-      "loggedAt": "2026-10-09T00:00:00.000Z"
-    },
-    {
-      "id": "2026-10-12",
-      "weekStart": "2026-10-12",
-      "weekEnd": "2026-10-18",
-      "totalReviews": 358,
-      "avgRating": 5,
-      "ratingBreakdown": {
-        "1": 0,
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 2
+      {
+        id: "2026-07-06",
+        weekStart: "2026-07-06",
+        weekEnd: "2026-07-12",
+        totalReviews: 321,
+        avgRating: 1,
+        ratingBreakdown: null,
+        loggedBy: "automação (Google Maps)",
+        loggedAt: "2026-09-11T00:00:00.000Z"
       },
-      "loggedBy": "Claude (verificação manual)",
-      "loggedAt": "2026-10-20T00:00:00.000Z"
-    },
-    {
-      "id": "2026-10-19",
-      "weekStart": "2026-10-19",
-      "weekEnd": "2026-10-25",
-      "totalReviews": 356,
-      "avgRating": null,
-      "ratingBreakdown": {
-        "1": 0,
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0
+      {
+        id: "2026-07-13",
+        weekStart: "2026-07-13",
+        weekEnd: "2026-07-19",
+        totalReviews: 321,
+        avgRating: null,
+        ratingBreakdown: null,
+        loggedBy: "automação (Google Maps)",
+        loggedAt: "2026-09-11T00:00:00.000Z"
       },
-      "loggedBy": "Claude (verificação manual)",
-      "loggedAt": "2026-10-26T00:00:00.000Z"
-    },
-    {
-      "id": "2026-10-26",
-      "weekStart": "2026-10-26",
-      "weekEnd": "2026-11-01",
-      "totalReviews": 352,
-      "avgRating": null,
-      "ratingBreakdown": {
-        "1": 0,
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0
+      {
+        id: "2026-07-20",
+        weekStart: "2026-07-20",
+        weekEnd: "2026-07-26",
+        totalReviews: 321,
+        avgRating: null,
+        ratingBreakdown: null,
+        loggedBy: "automação (Google Maps)",
+        loggedAt: "2026-09-11T00:00:00.000Z"
       },
-      "loggedBy": "Claude (verificação manual)",
-      "loggedAt": "2026-11-03T00:00:00.000Z"
-    },
-    {
-      "id": "2026-11-02",
-      "weekStart": "2026-11-02",
-      "weekEnd": "2026-11-08",
-      "totalReviews": 353,
-      "avgRating": 1,
-      "ratingBreakdown": {
-        "1": 1,
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0
+      {
+        id: "2026-07-27",
+        weekStart: "2026-07-27",
+        weekEnd: "2026-08-02",
+        totalReviews: 324,
+        avgRating: 5,
+        ratingBreakdown: null,
+        loggedBy: "automação (Google Maps)",
+        loggedAt: "2026-09-11T00:00:00.000Z"
       },
-      "loggedBy": "Claude (verificação manual)",
-      "loggedAt": "2026-11-16T00:00:00.000Z"
-    },
-    {
-      "id": "2026-11-09",
-      "weekStart": "2026-11-09",
-      "weekEnd": "2026-11-15",
-      "totalReviews": 355,
-      "avgRating": 5,
-      "ratingBreakdown": {
-        "1": 0,
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 2
+      {
+        id: "2026-08-03",
+        weekStart: "2026-08-03",
+        weekEnd: "2026-08-09",
+        totalReviews: 326,
+        avgRating: 5,
+        ratingBreakdown: null,
+        loggedBy: "automação (Google Maps)",
+        loggedAt: "2026-09-11T00:00:00.000Z"
       },
-      "loggedBy": "Claude (verificação manual)",
-      "loggedAt": "2026-11-16T00:00:00.000Z"
-    }
-  ],
-  "googleStats": {
-    "dist": {
-      "1": 32,
-      "2": 4,
-      "3": 11,
-      "4": 8,
-      "5": 300
+      {
+        id: "2026-08-10",
+        weekStart: "2026-08-10",
+        weekEnd: "2026-08-16",
+        totalReviews: 328,
+        avgRating: 5,
+        ratingBreakdown: null,
+        loggedBy: "automação (Google Maps)",
+        loggedAt: "2026-09-11T00:00:00.000Z"
+      },
+      {
+        id: "2026-08-17",
+        weekStart: "2026-08-17",
+        weekEnd: "2026-08-23",
+        totalReviews: 331,
+        avgRating: 3.67,
+        ratingBreakdown: null,
+        loggedBy: "automação (Google Maps)",
+        loggedAt: "2026-09-11T00:00:00.000Z"
+      },
+      {
+        id: "2026-08-24",
+        weekStart: "2026-08-24",
+        weekEnd: "2026-08-30",
+        totalReviews: 332,
+        avgRating: 5,
+        ratingBreakdown: null,
+        loggedBy: "automação (Google Maps)",
+        loggedAt: "2026-09-11T00:00:00.000Z"
+      },
+      {
+        id: "2026-08-31",
+        weekStart: "2026-08-31",
+        weekEnd: "2026-09-06",
+        totalReviews: 332,
+        avgRating: null,
+        ratingBreakdown: null,
+        loggedBy: "automação (Google Maps)",
+        loggedAt: "2026-09-11T00:00:00.000Z"
+      },
+      {
+        id: "2026-09-07",
+        weekStart: "2026-09-07",
+        weekEnd: "2026-09-13",
+        totalReviews: 332,
+        avgRating: null,
+        ratingBreakdown: null,
+        loggedBy: "automação (Google Maps)",
+        loggedAt: "2026-09-11T00:00:00.000Z"
+      },
+      {
+        id: "2026-09-14",
+        weekStart: "2026-09-14",
+        weekEnd: "2026-09-20",
+        totalReviews: 332,
+        avgRating: null,
+        ratingBreakdown: {
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "4": 0,
+          "5": 0
+        },
+        loggedBy: "automação (Google Maps)",
+        loggedAt: "2026-09-20T00:00:00.000Z"
+      },
+      {
+        id: "2026-09-21",
+        weekStart: "2026-09-21",
+        weekEnd: "2026-09-27",
+        totalReviews: 338,
+        avgRating: 5,
+        ratingBreakdown: {
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "4": 0,
+          "5": 6
+        },
+        loggedBy: "Claude (verificação manual)",
+        loggedAt: "2026-09-23T00:00:00.000Z"
+      },
+      {
+        id: "2026-09-28",
+        weekStart: "2026-09-28",
+        weekEnd: "2026-10-04",
+        totalReviews: 355,
+        avgRating: 5,
+        ratingBreakdown: {
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "4": 0,
+          "5": 17
+        },
+        loggedBy: "Claude (verificação manual)",
+        loggedAt: "2026-10-01T20:59:12.000Z"
+      },
+      {
+        id: "2026-10-05",
+        weekStart: "2026-10-05",
+        weekEnd: "2026-10-11",
+        totalReviews: 356,
+        avgRating: 5,
+        ratingBreakdown: {
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "4": 0,
+          "5": 1
+        },
+        loggedBy: "Claude (verificação manual)",
+        loggedAt: "2026-10-09T00:00:00.000Z"
+      },
+      {
+        id: "2026-10-12",
+        weekStart: "2026-10-12",
+        weekEnd: "2026-10-18",
+        totalReviews: 358,
+        avgRating: 5,
+        ratingBreakdown: {
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "4": 0,
+          "5": 2
+        },
+        loggedBy: "Claude (verificação manual)",
+        loggedAt: "2026-10-20T00:00:00.000Z"
+      },
+      {
+        id: "2026-10-19",
+        weekStart: "2026-10-19",
+        weekEnd: "2026-10-25",
+        totalReviews: 356,
+        avgRating: null,
+        ratingBreakdown: {
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "4": 0,
+          "5": 0
+        },
+        loggedBy: "Claude (verificação manual)",
+        loggedAt: "2026-10-26T00:00:00.000Z"
+      },
+      {
+        id: "2026-10-26",
+        weekStart: "2026-10-26",
+        weekEnd: "2026-11-01",
+        totalReviews: 352,
+        avgRating: null,
+        ratingBreakdown: {
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "4": 0,
+          "5": 0
+        },
+        loggedBy: "Claude (verificação manual)",
+        loggedAt: "2026-11-03T00:00:00.000Z"
+      },
+      {
+        id: "2026-11-02",
+        weekStart: "2026-11-02",
+        weekEnd: "2026-11-08",
+        totalReviews: 353,
+        avgRating: 1,
+        ratingBreakdown: {
+          "1": 1,
+          "2": 0,
+          "3": 0,
+          "4": 0,
+          "5": 0
+        },
+        loggedBy: "Claude (verificação manual)",
+        loggedAt: "2026-11-16T00:00:00.000Z"
+      },
+      {
+        id: "2026-11-09",
+        weekStart: "2026-11-09",
+        weekEnd: "2026-11-15",
+        totalReviews: 355,
+        avgRating: 5,
+        ratingBreakdown: {
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "4": 0,
+          "5": 2
+        },
+        loggedBy: "Claude (verificação manual)",
+        loggedAt: "2026-11-16T00:00:00.000Z"
+      },
+      {
+        id: "2026-11-16",
+        weekStart: "2026-11-16",
+        weekEnd: "2026-11-22",
+        totalReviews: 356,
+        avgRating: 5,
+        ratingBreakdown: {
+          "1": 0,
+          "2": 0,
+          "3": 0,
+          "4": 0,
+          "5": 1
+        },
+        loggedBy: "Claude (verificação manual)",
+        loggedAt: "2026-11-23T17:18:52.000Z"
+      }
+    ],
+    googleStats: {
+      dist: {
+        "1": 32,
+        "2": 4,
+        "3": 11,
+        "4": 8,
+        "5": 301
+      },
+      rating: 4.5,
+      totalReviews: 356,
+      updatedAt: "2026-11-23T17:18:52.000Z"
     },
-    "rating": 4.5,
-    "totalReviews": 355,
-    "updatedAt": "2026-11-16T16:57:54.000Z"
-  },
-  "comments": [
-    {
-      "id": "c1",
-      "name": "Dinda YouTube",
-      "rating": 5,
-      "weeksAgo": 3,
-      "text": "Comida sempre muito saborosa, chega quentinha o atendimento no 10000..!! Obrigada 🙏 vocês são de mais",
-      "ownerReply": "Obrigado Dinda!! Até a próxima!"
-    },
-    {
-      "id": "c2",
-      "name": "GabrielWinns",
-      "rating": 5,
-      "weeksAgo": 0,
-      "text": "Comida deliciosa gostinho de caseira, entrega rapida, chegou no tempo certo, pessoas educadas e respondem rápido, super recomendo 🙏❤️",
-      "ownerReply": "Obrigado gabriel! Seu Feedback é muito importante para nossa equipe"
-    },
-    {
-      "id": "c3",
-      "name": "Ezequiel Fagundes",
-      "rating": 5,
-      "weeksAgo": 0,
-      "text": "Comida top, entrega super rápido, chegou antes do tempo estimado, super recomendo 🏆",
-      "ownerReply": "Obrigado!!"
-    }
-  ],
-  "extraRatedNoText": "Além destes, mais 3 avaliações no último mês vieram só com nota (5★, 5★, 5★), sem comentário escrito.",
-  "reviews": [
-    {
-      "id": "cristiano-soveral",
-      "author": "Cristiano Soveral",
-      "rating": 5,
-      "text": "Comida sempre maravilhosa e saborosa, estou sempre pedindo. E mesmo delivery vem sempre quentinha. Recomendo",
-      "dateText": "Há 1 semana (em 16/11)",
-      "firstSeenAt": "2026-11-16T00:00:00.000Z",
-      "lastSeenAt": "2026-11-16T16:57:54.000Z",
-      "status": "active",
-      "removedNoticedAt": null
-    },
-    {
-      "id": "isadora-ramos-leal",
-      "author": "Isadora Ramos Leal",
-      "rating": 1,
-      "text": "essa da foto é a carbonara desse lugar amaldiçoado. eu nunca tinha visto isso na minha vida. uma massa que veio DIRETO da água da panela sem queijo sem ovo sem NADA. ah, aliás, esse da foto é o exemplo de bacon que veio. no meio da massa CARBONARA SEM MOLHO NENHUM. PIOR EXPERIENCIA QUE JÁ TIVE NA VIDA! e eles não tiveram nem a pachorra de salgar a massa sem molho. veio direto da agua do cozimento, depois de 1h de espera. fim do mundo",
-      "dateText": "Há 2 semanas (em 16/11)",
-      "firstSeenAt": "2026-11-16T00:00:00.000Z",
-      "lastSeenAt": "2026-11-16T16:57:54.000Z",
-      "status": "active",
-      "removedNoticedAt": null
-    },
-    {
-      "id": "jonas-hoesel",
-      "author": "Jonas Hoesel",
-      "rating": 5,
-      "text": "Comida muito bem temperada, e muito bem embalada!! Indico com certeza!! Parabéns",
-      "dateText": "Há 1 semana (em 20/10)",
-      "firstSeenAt": "2026-10-20T00:00:00.000Z",
-      "lastSeenAt": "2026-11-03T00:00:00.000Z",
-      "status": "active",
-      "removedNoticedAt": null
-    },
-    {
-      "id": "laura-antiqueira-vicente",
-      "author": "Laura Antiqueira Vicente",
-      "rating": 5,
-      "text": "(sem comentário escrito — só fotos)",
-      "dateText": "Há 4 dias (em 09/10)",
-      "firstSeenAt": "2026-10-09T00:00:00.000Z",
-      "lastSeenAt": "2026-11-03T00:00:00.000Z",
-      "status": "active",
-      "removedNoticedAt": null
-    },
-    {
-      "id": "linara-mello",
-      "author": "Linara Mello",
-      "rating": 5,
-      "text": "Loja super atenciosa e justa. Tive problemas com uma entrega de pedido equivocada e prontamente me reembolsaram o valor. Além disso, a comida é com uma pegada mais caseira e estava deliciosa, além da entrega ser super rápida. Valores justos e competitivos com o mercado. Recomendo!",
-      "dateText": "Há 4 dias (em 16/11)",
-      "firstSeenAt": "2026-11-16T00:00:00.000Z",
-      "lastSeenAt": "2026-11-16T16:57:54.000Z",
-      "status": "active",
-      "removedNoticedAt": null
-    },
-    {
-      "id": "melissa-bastos",
-      "author": "Melissa Bastos",
-      "rating": 5,
-      "text": "Quando penso em pedir uma comidinha sem erro, só vem Rango do Chef na cabeça. Bem feito e bem servido.",
-      "dateText": "Há 7 horas (em 26/10)",
-      "firstSeenAt": "2026-10-26T00:00:00.000Z",
-      "lastSeenAt": "2026-11-16T16:57:54.000Z",
-      "status": "active",
-      "removedNoticedAt": null
-    },
-    {
-      "id": "pablo-vargas",
-      "author": "Pablo Vargas",
-      "rating": 5,
-      "text": "Comida EXCELENTE, e gosto ótimo. Cuidado e atenção com o pedido, jamais vistos!!! Recomendo",
-      "dateText": "Há 3 dias (em 20/10)",
-      "firstSeenAt": "2026-10-20T00:00:00.000Z",
-      "lastSeenAt": "2026-11-16T16:57:54.000Z",
-      "status": "active",
-      "removedNoticedAt": null
-    },
-    {
-      "id": "tatiane-alcantara",
-      "author": "Tatiane Alcantara",
-      "rating": 5,
-      "text": "Ótimo atendimento! Comida deliciosa! Sempre peço pelo IFood e sou muito bem atendida! A atendente Pamela muito atenciosa!!! Super indico 💗",
-      "dateText": "Ontem (em 09/10)",
-      "firstSeenAt": "2026-10-09T00:00:00.000Z",
-      "lastSeenAt": "2026-11-03T00:00:00.000Z",
-      "status": "active",
-      "removedNoticedAt": null
-    }
-  ],
-  "weeksUpdatedAt": "2026-11-16T00:00:00.000Z",
-  "statsUpdatedAt": "2026-11-16T16:57:54.000Z",
-  "goalUpdatedAt": "2026-09-30T11:31:10.747Z"
-};
+    comments: [
+      {
+        id: "c1",
+        name: "Dinda YouTube",
+        rating: 5,
+        weeksAgo: 3,
+        text: "Comida sempre muito saborosa, chega quentinha o atendimento no 10000..!! Obrigada 🙏 vocês são de mais",
+        ownerReply: "Obrigado Dinda!! Até a próxima!"
+      },
+      {
+        id: "c2",
+        name: "GabrielWinns",
+        rating: 5,
+        weeksAgo: 0,
+        text: "Comida deliciosa gostinho de caseira, entrega rapida, chegou no tempo certo, pessoas educadas e respondem rápido, super recomendo 🙏❤️",
+        ownerReply: "Obrigado gabriel! Seu Feedback é muito importante para nossa equipe"
+      },
+      {
+        id: "c3",
+        name: "Ezequiel Fagundes",
+        rating: 5,
+        weeksAgo: 0,
+        text: "Comida top, entrega super rápido, chegou antes do tempo estimado, super recomendo 🏆",
+        ownerReply: "Obrigado!!"
+      }
+    ],
+    extraRatedNoText: "Além destes, mais 3 avaliações no último mês vieram só com nota (5★, 5★, 5★), sem comentário escrito.",
+    reviews: [
+      {
+        id: "andrei",
+        author: "Andrei",
+        rating: 5,
+        text: "",
+        dateText: "Há 3 dias (em 23/11)",
+        firstSeenAt: "2026-11-23T17:18:52.000Z",
+        lastSeenAt: "2026-11-23T17:18:52.000Z",
+        status: "active",
+        removedNoticedAt: null
+      },
+      {
+        id: "cristiano-soveral",
+        author: "Cristiano Soveral",
+        rating: 5,
+        text: "Comida sempre maravilhosa e saborosa, estou sempre pedindo. E mesmo delivery vem sempre quentinha. Recomendo",
+        dateText: "Há 1 semana (em 16/11)",
+        firstSeenAt: "2026-11-16T00:00:00.000Z",
+        lastSeenAt: "2026-11-16T16:57:54.000Z",
+        status: "active",
+        removedNoticedAt: null
+      },
+      {
+        id: "isadora-ramos-leal",
+        author: "Isadora Ramos Leal",
+        rating: 1,
+        text: "essa da foto é a carbonara desse lugar amaldiçoado. eu nunca tinha visto isso na minha vida. uma massa que veio DIRETO da água da panela sem queijo sem ovo sem NADA. ah, aliás, esse da foto é o exemplo de bacon que veio. no meio da massa CARBONARA SEM MOLHO NENHUM. PIOR EXPERIENCIA QUE JÁ TIVE NA VIDA! e eles não tiveram nem a pachorra de salgar a massa sem molho. veio direto da agua do cozimento, depois de 1h de espera. fim do mundo",
+        dateText: "Há 2 semanas (em 16/11)",
+        firstSeenAt: "2026-11-16T00:00:00.000Z",
+        lastSeenAt: "2026-11-16T16:57:54.000Z",
+        status: "active",
+        removedNoticedAt: null
+      },
+      {
+        id: "jonas-hoesel",
+        author: "Jonas Hoesel",
+        rating: 5,
+        text: "Comida muito bem temperada, e muito bem embalada!! Indico com certeza!! Parabéns",
+        dateText: "Há 1 semana (em 20/10)",
+        firstSeenAt: "2026-10-20T00:00:00.000Z",
+        lastSeenAt: "2026-11-03T00:00:00.000Z",
+        status: "active",
+        removedNoticedAt: null
+      },
+      {
+        id: "laura-antiqueira-vicente",
+        author: "Laura Antiqueira Vicente",
+        rating: 5,
+        text: "(sem comentário escrito — só fotos)",
+        dateText: "Há 4 dias (em 09/10)",
+        firstSeenAt: "2026-10-09T00:00:00.000Z",
+        lastSeenAt: "2026-11-03T00:00:00.000Z",
+        status: "active",
+        removedNoticedAt: null
+      },
+      {
+        id: "linara-mello",
+        author: "Linara Mello",
+        rating: 5,
+        text: "Loja super atenciosa e justa. Tive problemas com uma entrega de pedido equivocada e prontamente me reembolsaram o valor. Além disso, a comida é com uma pegada mais caseira e estava deliciosa, além da entrega ser super rápida. Valores justos e competitivos com o mercado. Recomendo!",
+        dateText: "Há 4 dias (em 16/11)",
+        firstSeenAt: "2026-11-16T00:00:00.000Z",
+        lastSeenAt: "2026-11-23T17:18:52.000Z",
+        status: "active",
+        removedNoticedAt: null
+      },
+      {
+        id: "melissa-bastos",
+        author: "Melissa Bastos",
+        rating: 5,
+        text: "Quando penso em pedir uma comidinha sem erro, só vem Rango do Chef na cabeça. Bem feito e bem servido.",
+        dateText: "Há 7 horas (em 26/10)",
+        firstSeenAt: "2026-10-26T00:00:00.000Z",
+        lastSeenAt: "2026-11-16T16:57:54.000Z",
+        status: "active",
+        removedNoticedAt: null
+      },
+      {
+        id: "pablo-vargas",
+        author: "Pablo Vargas",
+        rating: 5,
+        text: "Comida EXCELENTE, e gosto ótimo. Cuidado e atenção com o pedido, jamais vistos!!! Recomendo",
+        dateText: "Há 3 dias (em 20/10)",
+        firstSeenAt: "2026-10-20T00:00:00.000Z",
+        lastSeenAt: "2026-11-16T16:57:54.000Z",
+        status: "active",
+        removedNoticedAt: null
+      },
+      {
+        id: "tatiane-alcantara",
+        author: "Tatiane Alcantara",
+        rating: 5,
+        text: "Ótimo atendimento! Comida deliciosa! Sempre peço pelo IFood e sou muito bem atendida! A atendente Pamela muito atenciosa!!! Super indico 💗",
+        dateText: "Ontem (em 09/10)",
+        firstSeenAt: "2026-10-09T00:00:00.000Z",
+        lastSeenAt: "2026-11-03T00:00:00.000Z",
+        status: "active",
+        removedNoticedAt: null
+      }
+    ],
+    weeksUpdatedAt: "2026-11-23T17:18:52.000Z",
+    statsUpdatedAt: "2026-11-23T17:18:52.000Z",
+    goalUpdatedAt: "2026-09-30T11:31:10.747Z"
+  };
 
   var db = null;
   var configRef = null, weeksCol = null, statsRef = null, commentsCol = null, goalRef = null, reviewsCol = null;
@@ -940,6 +983,103 @@
       out.push({date: iso, gain: perDay[iso]});
     });
     return out;
+  }
+
+  // --- bônus travado: só conta avaliações 5★ novas por semana, a partir do
+  // detalhamento por nota (ratingBreakdown) já registrado em cada checagem.
+  // Ao contrário do delta líquido (que pode ficar negativo se uma avaliação
+  // some), essa contagem nunca é reduzida depois — uma vez somada a uma 5★
+  // naquela semana, ela fica valendo pro bônus daquele mês para sempre,
+  // mesmo que a avaliação desapareça do Google numa checagem futura.
+  function computeFiveStarSeries(){
+    return computeSeries().map(function(s){
+      var bd = s.ratingBreakdown;
+      var five = bd ? Number(bd[5] !== undefined ? bd[5] : (bd["5"] !== undefined ? bd["5"] : 0)) : null;
+      return Object.assign({}, s, {five5: five});
+    });
+  }
+
+  function computeMonthlyFiveStarHistory(){
+    var series = computeFiveStarSeries();
+    var byMonth = {}, order = [];
+    series.forEach(function(s){
+      var mk = monthKey(s.weekStart);
+      if (!byMonth[mk]){ byMonth[mk] = {month: mk, total: 0, incomplete: false, hasData: false}; order.push(mk); }
+      if (s.five5 === null){ byMonth[mk].incomplete = true; }
+      else { byMonth[mk].total += s.five5; byMonth[mk].hasData = true; }
+    });
+    var seen = {};
+    return order.filter(function(mk){
+      if (seen[mk]) return false;
+      seen[mk] = true;
+      return true;
+    }).sort().reverse().map(function(mk){ return byMonth[mk]; });
+  }
+
+  function computeCurrentMonthFiveStar(){
+    var mk = monthKey(toISODate(new Date()));
+    var hist = computeMonthlyFiveStarHistory();
+    for (var i=0;i<hist.length;i++){ if (hist[i].month === mk) return hist[i]; }
+    return {month: mk, total: 0, incomplete: false};
+  }
+
+  function monthLabel(mk){
+    var parts = String(mk).split("-");
+    var d = new Date(Number(parts[0]), Number(parts[1])-1, 1);
+    var label = d.toLocaleDateString("pt-BR", {month:"long", year:"numeric"});
+    return label.charAt(0).toUpperCase() + label.slice(1);
+  }
+
+  function renderFiveStarChart(){
+    var host = document.getElementById("fiveStarChartHost");
+    var series = computeFiveStarSeries().filter(function(s){ return s.five5 !== null; }).slice(-13);
+    if (!series.length){
+      host.innerHTML = '<p class="muted-small" style="margin:4px 0 0;">O gráfico aparece quando houver semanas com detalhamento por nota registrado (a partir de set/2026).</p>';
+      return;
+    }
+    var barW = 34, gap = 14, padL = 24, padR = 10, padT = 22, padB = 22;
+    var chartH = 110;
+    var w = padL + padR + series.length * (barW + gap) - gap;
+    var maxVal = Math.max.apply(null, series.map(function(s){ return s.five5; }).concat([1]));
+    var niceMax = Math.max(maxVal, 1);
+    var scaleH = chartH - padT - padB;
+    function y(v){ return padT + scaleH - (v/niceMax)*scaleH; }
+
+    var bars = "";
+    series.forEach(function(s, i){
+      var x = padL + i*(barW+gap);
+      var barY = y(s.five5);
+      var barH = Math.max(2, scaleH + padT - barY);
+      bars += '<rect x="'+x+'" y="'+barY+'" width="'+barW+'" height="'+barH+'" rx="4" fill="var(--gold)"/>';
+      bars += '<text x="'+(x+barW/2)+'" y="'+(barY-6)+'" text-anchor="middle" font-size="11" font-weight="600" fill="var(--ink)" font-family="IBM Plex Mono, monospace">'+s.five5+'</text>';
+      bars += '<text x="'+(x+barW/2)+'" y="'+(chartH-6)+'" text-anchor="middle" font-size="10" fill="var(--ink-faint)">'+fmtDate(s.weekStart)+'</text>';
+    });
+
+    host.innerHTML = '<svg width="'+w+'" height="'+chartH+'" viewBox="0 0 '+w+' '+chartH+'" role="img" aria-label="avaliações 5 estrelas novas por semana">'+bars+'</svg>';
+  }
+
+  function renderFiveStarBonus(){
+    var textEl = document.getElementById("fiveStarProgressText");
+    if (!textEl) return;
+    var cur = computeCurrentMonthFiveStar();
+    var monthName = new Date().toLocaleDateString("pt-BR", {month:"long"});
+    textEl.textContent = cur.total + (cur.total===1 ? " avaliação 5★ nova" : " avaliações 5★ novas") + " em " + monthName +
+      (cur.incomplete ? " (parcial — tem semana este mês sem detalhamento por nota ainda)" : "");
+
+    renderFiveStarChart();
+
+    var body = document.getElementById("fiveStarHistoryBody");
+    var hist = computeMonthlyFiveStarHistory();
+    if (!hist.length){
+      body.innerHTML = '<tr class="empty-row"><td colspan="2">Nenhum dado ainda.</td></tr>';
+      return;
+    }
+    body.innerHTML = hist.map(function(h){
+      var valueHtml = !h.hasData
+        ? '— <span class="muted-small">(sem detalhamento)</span>'
+        : (h.total + (h.incomplete ? ' <span class="muted-small">(parcial)</span>' : ''));
+      return '<tr><td>'+esc(monthLabel(h.month))+'</td><td>'+valueHtml+'</td></tr>';
+    }).join("");
   }
 
   function persistGoal(){
@@ -1380,6 +1520,7 @@
     renderMapsForm();
     renderGoal();
     renderGoalChart();
+    renderFiveStarBonus();
     renderStats();
     renderChart();
     renderHistory();
